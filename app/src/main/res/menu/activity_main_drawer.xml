@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_apartment"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Apartman" />
+        <item
+            android:id="@+id/nav_flat"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Daire" />
+        <item
+            android:id="@+id/nav_dues"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Aidat" />
+        <item
+            android:id="@+id/nav_order"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Sipariş" />
+        <item
+            android:id="@+id/nav_numbers"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Önemli Numaralar" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_poll"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Oylama" />
+            <item
+                android:id="@+id/nav_warn"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Uyarı" />
+        </menu>
+    </item>
+
+</menu>
