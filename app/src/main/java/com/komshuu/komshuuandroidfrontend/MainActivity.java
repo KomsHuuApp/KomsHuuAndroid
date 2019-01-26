@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.View.OnClickListener;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -148,6 +149,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_dues) {
 
         } else if (id == R.id.nav_order) {
+            Intent intent = new Intent(this, UserOrderActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_numbers) {
             Intent intent = new Intent(this, EmergencyNumbersActivity.class);
