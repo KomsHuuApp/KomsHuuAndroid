@@ -22,8 +22,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -66,12 +71,27 @@ public class MainActivity extends AppCompatActivity
 
         final TextView mTextView = (TextView) findViewById(R.id.text);
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="https://enigmatic-atoll-89666.herokuapp.com/getAnnouncement?announcementId=2";
+        String url ="https://enigmatic-atoll-89666.herokuapp.com/getAnnouncements?apartmentId=1";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        mTextView.setText("Response is: "+ response);
+                        String result = "";
+                        try {
+                            JSONArray announcements = new JSONArray(response);
+                            for(int i = 0; i < announcements.length(); i++) {
+                                JSONObject announcement = announcements.getJSONObject(i);
+                                String text = announcement.getString("text");
+                                String date = announcement.getString("announcementDate");
+                                String announcer = announcement.getString("announcerId");
+                                String importance = announcement.getString("announcementImportance");
+
+                                result += "Text: " + text + "\nDate: " + date + "\nAnnouncer: " + announcer + "\nImportance: " + importance + "\n\n";
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        mTextView.setText(result);
                     }
                 }, new Response.ErrorListener() {
             @Override
