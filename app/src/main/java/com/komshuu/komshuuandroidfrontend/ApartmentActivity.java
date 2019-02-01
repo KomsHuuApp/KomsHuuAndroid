@@ -15,7 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EmergencyNumbersActivity extends AppCompatActivity {
+public class ApartmentActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,21 +23,20 @@ public class EmergencyNumbersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_emergency_numbers);
         final TextView mTextView = (TextView) findViewById(R.id.textView2);
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="https://enigmatic-atoll-89666.herokuapp.com/getEmergencyNumbers?apartmentId=1";
+        String url = "https://enigmatic-atoll-89666.herokuapp.com/getApartmentById?apartmentId=2";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         String result = "";
                         try {
-                            JSONArray emergencyNumbers = new JSONArray(response);
-                            for(int i = 0; i < emergencyNumbers.length(); i++) {
-                                JSONObject announcement = emergencyNumbers.getJSONObject(i);
-                                String name = announcement.getString("name");
-                                String phoneNumber = announcement.getString("phoneNumber");
+                            JSONObject announcement = new JSONObject(response);
+                            String name = announcement.getString("name");
+                            String address = announcement.getString("address");
+                            String flatNumber = announcement.getString("flatNumber");
 
-                                result += "Phone Number Statement: " + name + "\nPhone Number: " + phoneNumber + "\n\n";
-                            }
+                            result += "Apartment Name: " + name + "\nApartment Address: " + address + "\nApartment Total Flat: " + flatNumber + "\n";
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
