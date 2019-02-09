@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -14,28 +16,31 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.View.OnClickListener;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.komshuu.komshuuandroidfrontend.adapters.AnnouncementAdapter;
+import com.komshuu.komshuuandroidfrontend.models.Announcement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Button getValue;
+    RecyclerView recyclerView;
+    ArrayList<Announcement> announcementList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +66,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -71,37 +75,43 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        final TextView mTextView = (TextView) findViewById(R.id.text);
         RequestQueue queue = Volley.newRequestQueue(this);
         String url ="https://enigmatic-atoll-89666.herokuapp.com/getAnnouncements?apartmentId=1";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        String result = "";
+                        announcementList = new ArrayList<>();
                         try {
                             JSONArray announcements = new JSONArray(response);
                             for(int i = 0; i < announcements.length(); i++) {
                                 JSONObject announcement = announcements.getJSONObject(i);
-                                String text = announcement.getString("text");
-                                String date = announcement.getString("announcementDate");
-                                String announcer = announcement.getString("announcerId");
-                                String importance = announcement.getString("announcementImportance");
-
-                                result += "Text: " + text + "\nDate: " + date + "\nAnnouncer: " + announcer + "\nImportance: " + importance + "\n\n";
+                                Announcement temp = new Announcement();
+                                temp.setImageID(R.drawable.ic_menu_gallery);
+                                temp.setAnnouncementDate(announcement.getString("announcementDate"));
+                                temp.setAnnouncementDescription(announcement.getString("text"));
+                                announcementList.add(temp);
                             }
+                            recyclerView = (RecyclerView) findViewById(R.id.recylerview);
+
+                            AnnouncementAdapter productAdapter = new AnnouncementAdapter(MainActivity.this, announcementList);
+                            recyclerView.setAdapter(productAdapter);
+
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
+                            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                            recyclerView.setLayoutManager(linearLayoutManager);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        mTextView.setText(result);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mTextView.setText("That didn't work!");
+                //bos iken
             }
         });
         queue.add(stringRequest);
+
     }
 
     @Override
