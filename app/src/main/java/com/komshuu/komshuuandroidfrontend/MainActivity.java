@@ -156,7 +156,9 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, ApartmentActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_flat) {
-
+            System.out.print(this.toString());
+            Intent intent = new Intent(this, FlatActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_dues) {
 
         } else if (id == R.id.nav_order) {
