@@ -1,6 +1,8 @@
 package com.komshuu.komshuuandroidfrontend;
 
+import android.content.DialogInterface;
 import android.os.StrictMode;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -42,37 +44,53 @@ public class UserOrderActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.HOUR_OF_DAY, 3);
-                String time= new SimpleDateFormat("dd MMM yyyy HH:mm").format(cal.getTime());
 
-                try{
-                    URL url = new URL(server_url);
-                    HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-                    httpCon.setDoOutput(true);
-                    httpCon.setRequestProperty("Content-Type", "application/x-www-form-urlencoded" );
-                    httpCon.setRequestMethod("POST");
-                    httpCon.setRequestProperty("Content-Type","application/json");
-                    JSONObject eventObject = new JSONObject();
-                    eventObject.put("orderType",siparisInput.getText().toString());
-                    eventObject.put("apartmentId", new Long(2));
-                    eventObject.put("orderDate", time);
-                    String json = eventObject.toString();
+                AlertDialog.Builder builder = new AlertDialog.Builder(UserOrderActivity.this);
 
-                    byte[] outputInBytes = json.getBytes("UTF-8");
-                    OutputStream os = httpCon.getOutputStream();
-                    os.write( outputInBytes );
-                    os.close();
+                builder.setMessage("Siparisi Vermek istediginizden Emin misiniz?")
+                        .setPositiveButton("Evet", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Calendar cal = Calendar.getInstance();
+                                cal.add(Calendar.HOUR_OF_DAY, 3);
+                                String time= new SimpleDateFormat("dd MMM yyyy HH:mm").format(cal.getTime());
 
-                    int responseCode = httpCon.getResponseCode();
-                    System.out.println("response code: " + responseCode);
-                } catch (ProtocolException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                                try{
+                                    URL url = new URL(server_url);
+                                    HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+                                    httpCon.setDoOutput(true);
+                                    httpCon.setRequestProperty("Content-Type", "application/x-www-form-urlencoded" );
+                                    httpCon.setRequestMethod("POST");
+                                    httpCon.setRequestProperty("Content-Type","application/json");
+                                    JSONObject eventObject = new JSONObject();
+                                    eventObject.put("orderType",siparisInput.getText().toString());
+                                    eventObject.put("apartmentId", new Long(2));
+                                    eventObject.put("orderDate", time);
+                                    String json = eventObject.toString();
+
+                                    byte[] outputInBytes = json.getBytes("UTF-8");
+                                    OutputStream os = httpCon.getOutputStream();
+                                    os.write( outputInBytes );
+                                    os.close();
+
+                                    int responseCode = httpCon.getResponseCode();
+                                    System.out.println("response code: " + responseCode);
+                                } catch (ProtocolException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        })
+                        .setNegativeButton("Hayır",null);
+
+                AlertDialog alert = builder.create();
+                alert.show();
+
+
             }
         });
     }
