@@ -1,5 +1,11 @@
 <resources>
-    <string name="app_name">KomsHuuAndroidFrontend</string>
+    <string name="app_name">KomsHuu</string>
+    <string name="homepage">Anasayfa</string>
+    <string name="apartment">Apartman</string>
+    <string name="flat">Daire</string>
+    <string name="dues">Aidat</string>
+    <string name="order">Sipariş</string>
+    <string name="emergency_number">Önemli Numaralar</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>

@@ -155,19 +155,23 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_apartment) {
             Intent intent = new Intent(this, ApartmentActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (id == R.id.nav_flat) {
             System.out.print(this.toString());
             Intent intent = new Intent(this, FlatActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (id == R.id.nav_dues) {
 
         } else if (id == R.id.nav_order) {
             Intent intent = new Intent(this, UserOrderActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
         } else if (id == R.id.nav_numbers) {
             Intent intent = new Intent(this, EmergencyNumbersActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (id == R.id.nav_poll) {
 
         } else if (id == R.id.nav_warn) {
