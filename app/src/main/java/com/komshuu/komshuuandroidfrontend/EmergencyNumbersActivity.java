@@ -2,6 +2,9 @@ package com.komshuu.komshuuandroidfrontend;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -10,12 +13,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.komshuu.komshuuandroidfrontend.adapters.EmergencyCallNumberAdapter;
+import com.komshuu.komshuuandroidfrontend.models.EmergencyCallNumber;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class EmergencyNumbersActivity extends AppCompatActivity {
+
+    RecyclerView recyclerView;
+    ArrayList<EmergencyCallNumber> emergencyCallNumbers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,25 +38,33 @@ public class EmergencyNumbersActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        String result = "";
+                        emergencyCallNumbers = new ArrayList<>();
                         try {
                             JSONArray emergencyNumbers = new JSONArray(response);
                             for(int i = 0; i < emergencyNumbers.length(); i++) {
                                 JSONObject announcement = emergencyNumbers.getJSONObject(i);
-                                String name = announcement.getString("name");
-                                String phoneNumber = announcement.getString("phoneNumber");
-
-                                result += "Phone Number Statement: " + name + "\nPhone Number: " + phoneNumber + "\n\n";
+                                EmergencyCallNumber temp = new EmergencyCallNumber();
+                                temp.setImageID(R.drawable.ic_menu_gallery);
+                                temp.setName(announcement.getString("name"));
+                                temp.setPhoneNumber(announcement.getString("phoneNumber"));
+                                emergencyCallNumbers.add(temp);
                             }
+                            recyclerView = (RecyclerView) findViewById(R.id.recylerview);
+
+                            EmergencyCallNumberAdapter productAdapter = new EmergencyCallNumberAdapter(EmergencyNumbersActivity.this, emergencyCallNumbers);
+                            recyclerView.setAdapter(productAdapter);
+
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(EmergencyNumbersActivity.this);
+                            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                            recyclerView.setLayoutManager(linearLayoutManager);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        mTextView.setText(result);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mTextView.setText("That didn't work!");
+
             }
         });
         queue.add(stringRequest);
