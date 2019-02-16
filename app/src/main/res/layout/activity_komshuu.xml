@@ -6,11 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".KomshuuActivity">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recylerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
         tools:layout_editor_absoluteX="176dp"
         tools:layout_editor_absoluteY="29dp" />
 </android.support.constraint.ConstraintLayout>
