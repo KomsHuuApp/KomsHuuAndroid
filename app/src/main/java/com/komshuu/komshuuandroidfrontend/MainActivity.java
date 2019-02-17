@@ -3,6 +3,7 @@ package com.komshuu.komshuuandroidfrontend;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.android.volley.Request;
@@ -33,14 +35,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    Button getValue;
+    Button sendButton;
+    EditText editText;
     RecyclerView recyclerView;
     ArrayList<Announcement> announcementList;
+    String server_url = "https://enigmatic-atoll-89666.herokuapp.com/addComplaint";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +74,50 @@ public class MainActivity extends AppCompatActivity
                 layout.addView(snackView, 0);
                 snackbar.show();
 
+                editText = (EditText) snackView.findViewById(R.id.et);
+                sendButton = (Button) snackView.findViewById(R.id.btn);
+
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+                sendButton.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        Calendar cal = Calendar.getInstance();
+                        cal.add(Calendar.HOUR_OF_DAY, 3);
+                        String time = new SimpleDateFormat("dd MMM yyyy HH:mm").format(cal.getTime());
+
+                        try {
+                            URL url = new URL(server_url);
+                            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+                            httpCon.setDoOutput(true);
+                            httpCon.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                            httpCon.setRequestMethod("POST");
+                            httpCon.setRequestProperty("Content-Type", "application/json");
+                            JSONObject eventObject = new JSONObject();
+                            eventObject.put("apartmentId", new Long(2));
+                            eventObject.put("date", time);
+                            eventObject.put("personId", new Long(2));
+                            eventObject.put("text", editText.getText().toString());
+
+                            String json = eventObject.toString();
+
+                            byte[] outputInBytes = json.getBytes("UTF-8");
+                            OutputStream os = httpCon.getOutputStream();
+                            os.write(outputInBytes);
+                            os.close();
+
+                            int responseCode = httpCon.getResponseCode();
+                            System.out.println("response code: " + responseCode);
+                        } catch (ProtocolException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         });
 
