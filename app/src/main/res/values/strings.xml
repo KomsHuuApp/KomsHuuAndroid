@@ -27,4 +27,11 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string-array name="numbers">
+        <item>TamBugday</item>
+        <item>Cavdar</item>
+        <item>Kepekli</item>
+        <item>BeyazEkmek</item>
+
+    </string-array>
 </resources>
