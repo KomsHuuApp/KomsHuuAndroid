@@ -228,6 +228,12 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, EmergencyNumbersActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        }
+        else if (id == R.id.complaints) {
+            Intent intent = new Intent(this, ComplaintActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
         } else if (id == R.id.nav_poll) {
 
         } else if (id == R.id.nav_warn) {

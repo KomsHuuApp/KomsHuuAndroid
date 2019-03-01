@@ -17,7 +17,9 @@
             android:id="@+id/et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter your complaint"/>
+            android:textColorHint="#FFFFFF"
+            android:textColor="#FFFFFF"
+            android:hint="Şikayetinizi giriniz."/>
         <Button
             android:id="@+id/btn"
             android:layout_width="match_parent"

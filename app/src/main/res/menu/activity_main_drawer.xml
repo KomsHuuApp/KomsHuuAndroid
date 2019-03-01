@@ -24,6 +24,10 @@
             android:id="@+id/nav_numbers"
             android:icon="@drawable/ic_menu_manage"
             android:title="Önemli Numaralar" />
+        <item
+            android:id="@+id/complaints"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Şikayetler" />
     </group>
 
     <item android:title="Communicate">
