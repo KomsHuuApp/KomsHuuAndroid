@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -30,6 +31,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.komshuu.komshuuandroidfrontend.adapters.AnnouncementAdapter;
 import com.komshuu.komshuuandroidfrontend.models.Announcement;
+import com.komshuu.komshuuandroidfrontend.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,6 +54,9 @@ public class MainActivity extends AppCompatActivity
     RecyclerView recyclerView;
     ArrayList<Announcement> announcementList;
     String server_url = "https://enigmatic-atoll-89666.herokuapp.com/addComplaint";
+    TextView textViewName;
+    TextView textViewUserName;
+    View mHeaderView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +133,11 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        mHeaderView = navigationView.getHeaderView(0);
+        textViewName = (TextView) mHeaderView.findViewById(R.id.textViewName);
+        textViewUserName = (TextView) mHeaderView.findViewById(R.id.textViewUserName);
+        textViewName.setText("Arda Arslan");
+        textViewUserName.setText("aarslan");
         navigationView.setNavigationItemSelectedListener(this);
 
         RequestQueue queue = Volley.newRequestQueue(this);

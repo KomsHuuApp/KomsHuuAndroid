@@ -30,6 +30,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.komshuu.komshuuandroidfrontend.models.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,8 +156,37 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        Intent mainActivity = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(mainActivity);
+        String username = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url ="https://enigmatic-atoll-89666.herokuapp.com/login?username=" + username + "&password=" + password;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject object = new JSONObject(response);
+                    if(object != null) {
+                        User user = new User(object.getLong("id"), object.getString("name"),
+                                object.getString("surname"), object.getLong("role"),
+                                object.getString("relativeNumber"), object.getString("number"),
+                                object.getString("gender"), object.getLong("apartmentId"),
+                                object.getString("password"), object.getString("username"),
+                                object.getInt("flatNumber"));
+                        Intent mainActivity = new Intent(LoginActivity.this, MainActivity.class);
+                        mainActivity.putExtra("user", user);
+                        startActivity(mainActivity);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(stringRequest);
         /*if (mAuthTask != null) {
             return;
         }
