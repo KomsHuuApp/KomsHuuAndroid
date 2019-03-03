@@ -7,27 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.komshuu.komshuuandroidfrontend.EmergencyNumbersActivity;
-import com.komshuu.komshuuandroidfrontend.models.Apartment;
 import com.komshuu.komshuuandroidfrontend.models.EmergencyCallNumber;
 import com.komshuu.komshuuandroidfrontend.R;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCallNumberAdapter.MyViewHolder> {
@@ -62,7 +43,7 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView emergencyId, emergencyCallName, emergencyCallNumber, apartmentId;
-        ImageView emergencyCallImage, deleteproduct, editproduct;
+        ImageView emergencyCallImage, deleteProduct, editProduct;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -71,8 +52,8 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
             emergencyCallNumber = (TextView) itemView.findViewById(R.id.emergencynumber);
             apartmentId = (TextView) itemView.findViewById(R.id.apartmentId);
             emergencyCallImage = (ImageView) itemView.findViewById(R.id.emergencyImage);
-            deleteproduct = (ImageView) itemView.findViewById(R.id.deleteproduct);
-            editproduct = (ImageView) itemView.findViewById(R.id.editproduct);
+            deleteProduct = (ImageView) itemView.findViewById(R.id.deleteproduct);
+            editProduct = (ImageView) itemView.findViewById(R.id.editproduct);
         }
 
         public void setData(EmergencyCallNumber selectedProduct, int position) {
@@ -89,6 +70,7 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
 
 
         }
+
 
     }
 }

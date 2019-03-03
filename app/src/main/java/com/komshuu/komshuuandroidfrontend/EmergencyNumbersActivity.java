@@ -84,8 +84,11 @@ public class EmergencyNumbersActivity extends AppCompatActivity {
     }
 
     public void delete(View v) {
+        TextView textView2 = (TextView) findViewById(R.id.emergencyname);
         TextView textView = (TextView) findViewById(R.id.emergencyId);
         TextView textView1 = (TextView) findViewById(R.id.apartmentId);
+        ImageView imageView = (ImageView) findViewById(R.id.deleteproduct);
+        System.out.println(textView2.getText());
         RequestQueue queue = Volley.newRequestQueue(this);
         String url ="https://enigmatic-atoll-89666.herokuapp.com/deleteEmergencyNumber?id=" + textView.getText() + "&apartmentId=" + textView1.getText();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
