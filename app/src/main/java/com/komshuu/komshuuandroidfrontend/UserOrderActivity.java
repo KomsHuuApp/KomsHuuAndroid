@@ -5,6 +5,8 @@ import android.os.StrictMode;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -15,6 +17,9 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.komshuu.komshuuandroidfrontend.adapters.UserOrderAdapter;
+import com.komshuu.komshuuandroidfrontend.models.UserOrder;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
@@ -23,9 +28,14 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
-public class UserOrderActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class UserOrderActivity extends AppCompatActivity {
+    private RecyclerView mRecyclerView;
+    private UserOrderAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private ArrayList<UserOrder> mUserOrderList;
 
 
     EditText siparisInput;
@@ -34,10 +44,14 @@ public class UserOrderActivity extends AppCompatActivity implements AdapterView.
     String text = "";
     String text1 = "";
     int check = 0;
-    int TamBugday = 0;
-    int Cavdar = 0;
-    int Kepekli = 0;
-    int BeyazEkmek = 0;
+    int tamBugday = 0;
+    int cavdar = 0;
+    int kepekli = 0;
+    int beyazEkmek = 0;
+    int torkuSut = 0;
+    int pınarSut = 0;
+    int icimSut = 0;
+    int sutasSut = 0;
 
     String server_url = "https://enigmatic-atoll-89666.herokuapp.com/addOrder";
 
@@ -46,12 +60,10 @@ public class UserOrderActivity extends AppCompatActivity implements AdapterView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_order);
 
+        createUserOrderList();
+        buildRecyclerView();
 
-        Spinner spinner = findViewById(R.id.spinner1);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.numbers,android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+
 
 
         submitButton = (Button) findViewById(R.id.submitButton);
@@ -133,51 +145,68 @@ public class UserOrderActivity extends AppCompatActivity implements AdapterView.
                         .setPositiveButton("Evet", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                text = "";
-                                AlertDialog.Builder builder2 = new AlertDialog.Builder(UserOrderActivity.this);
-                                builder2.setMessage("Siparisiniz iptal edilmistir");
-                                builder2.setPositiveButton("Tamam", null);
+                                if (text.equals("")) {
+                                    AlertDialog.Builder builder3 = new AlertDialog.Builder(UserOrderActivity.this);
+                                    builder3.setMessage("Mevcut Siparisiniz Bulunmamaktadir");
+                                    builder3.setPositiveButton("Tamam", null);
 
-                                AlertDialog alert2 = builder2.create();
-                                alert2.show();
+                                    AlertDialog alert3 = builder3.create();
+                                    alert3.show();
+                                }
+                                else {
+                                    text = "";
+                                    AlertDialog.Builder builder2 = new AlertDialog.Builder(UserOrderActivity.this);
+                                    builder2.setMessage("Siparisiniz iptal edilmistir");
+                                    builder2.setPositiveButton("Tamam", null);
+
+                                    AlertDialog alert2 = builder2.create();
+                                    alert2.show();
+                                }
 
                             }
                         })
                         .setNegativeButton("Hayır", null);
-
                         AlertDialog alert = builder1.create();
                         alert.show();
-
-
             }
         });
 
 
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(++check > 1) {
-            if (parent.getItemAtPosition(position).toString().equals("TamBugday"))
-                TamBugday++;
-            else if (parent.getItemAtPosition(position).toString().equals("Cavdar"))
-                Cavdar++;
-            else if (parent.getItemAtPosition(position).toString().equals("Kepekli"))
-                Kepekli++;
-            else if (parent.getItemAtPosition(position).toString().equals("BeyazEkmek"))
-                BeyazEkmek++;
+    public void createUserOrderList() {
+        mUserOrderList = new ArrayList<>();
+        mUserOrderList.add(new UserOrder("Beyaz Ekmek"));
+        mUserOrderList.add(new UserOrder("Kepek Ekmegi"));
+        mUserOrderList.add(new UserOrder("Cavdar Ekmegi"));
+        mUserOrderList.add(new UserOrder("TamBudgay Ekmegi"));
 
-                text1 = parent.getItemAtPosition(position).toString() + " Sepete Eklendi.";
-                text += parent.getItemAtPosition(position).toString() + "\n";
-                Toast.makeText(parent.getContext(), text1, Toast.LENGTH_SHORT).show();
-
-
-
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
 
     }
+    public void buildRecyclerView() {
+        mRecyclerView = findViewById(R.id.recyclerView);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mAdapter = new UserOrderAdapter(mUserOrderList);
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new UserOrderAdapter.OnItemClickListener() {
+            @Override
+            public void onAddClick(int position) {
+                Toast.makeText(UserOrderActivity.this,
+                        "Oylesine", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onDeleteClick(int position) {
+                Toast.makeText(UserOrderActivity.this,
+                        "Oylesine2", Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+
 }
