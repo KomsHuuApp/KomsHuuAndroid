@@ -28,6 +28,7 @@ public class UserOrderAdapter extends RecyclerView.Adapter<UserOrderAdapter.Exam
 
     public static class ExampleViewHolder extends RecyclerView.ViewHolder {
         public TextView mTextView1;
+        public TextView mTextView2;
         public ImageView mAddImage;
         public ImageView mRemoveImage;
 
@@ -35,6 +36,7 @@ public class UserOrderAdapter extends RecyclerView.Adapter<UserOrderAdapter.Exam
         public ExampleViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
             mTextView1 = itemView.findViewById(R.id.Option);
+            mTextView2 = itemView.findViewById(R.id.counterValue);
             mAddImage = itemView.findViewById(R.id.image_add);
             mRemoveImage = itemView.findViewById(R.id.image_remove);
 
@@ -82,6 +84,8 @@ public class UserOrderAdapter extends RecyclerView.Adapter<UserOrderAdapter.Exam
         UserOrder currentItem = mUserOrderList.get(i);
 
         exampleViewHolder.mTextView1.setText(currentItem.getText());
+        exampleViewHolder.mTextView2.setText(currentItem.getCount());
+
 
     }
 

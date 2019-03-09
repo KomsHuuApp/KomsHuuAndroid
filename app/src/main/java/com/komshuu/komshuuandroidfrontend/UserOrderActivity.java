@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -37,21 +38,13 @@ public class UserOrderActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<UserOrder> mUserOrderList;
 
-
+    TextView showValue;
     EditText siparisInput;
     Button submitButton;
     Button deleteButton;
     String text = "";
-    String text1 = "";
-    int check = 0;
-    int tamBugday = 0;
-    int cavdar = 0;
-    int kepekli = 0;
-    int beyazEkmek = 0;
-    int torkuSut = 0;
-    int pınarSut = 0;
-    int icimSut = 0;
-    int sutasSut = 0;
+
+
 
     String server_url = "https://enigmatic-atoll-89666.herokuapp.com/addOrder";
 
@@ -59,6 +52,7 @@ public class UserOrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_order);
+
 
         createUserOrderList();
         buildRecyclerView();
@@ -74,7 +68,7 @@ public class UserOrderActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
+                createOrder();
                 AlertDialog.Builder builder = new AlertDialog.Builder(UserOrderActivity.this);
                 builder.setTitle("Siparis Ver");
                 builder.setMessage("Siparisi Vermek istediginizden Emin misiniz?" + "\n" + "Mevcut siparisiniz: " + "\n" + text)
@@ -114,6 +108,7 @@ public class UserOrderActivity extends AppCompatActivity {
                                         alert2.show();
 
                                     }
+                                    text = "";
                                 } catch (ProtocolException e) {
                                     e.printStackTrace();
                                 } catch (IOException e) {
@@ -124,7 +119,12 @@ public class UserOrderActivity extends AppCompatActivity {
 
                             }
                         })
-                        .setNegativeButton("Hayır",null);
+                        .setNegativeButton("Hayır", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                text = "";
+                            }
+                        });
 
                 AlertDialog alert = builder.create();
                 alert.show();
@@ -137,7 +137,7 @@ public class UserOrderActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                createOrder();
                 final AlertDialog.Builder builder1 = new AlertDialog.Builder(UserOrderActivity.this);
                 builder1.setTitle("Siparis İptali");
                 builder1.setMessage("Siparisi iptal etmek istediginizden Emin misiniz?" + "\n" + "Mevcut siparisiniz: " + "\n" + text);
@@ -155,6 +155,7 @@ public class UserOrderActivity extends AppCompatActivity {
                                 }
                                 else {
                                     text = "";
+                                    resetAll();
                                     AlertDialog.Builder builder2 = new AlertDialog.Builder(UserOrderActivity.this);
                                     builder2.setMessage("Siparisiniz iptal edilmistir");
                                     builder2.setPositiveButton("Tamam", null);
@@ -165,7 +166,12 @@ public class UserOrderActivity extends AppCompatActivity {
 
                             }
                         })
-                        .setNegativeButton("Hayır", null);
+                        .setNegativeButton("Hayır", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                text = "";
+                            }
+                        });
                         AlertDialog alert = builder1.create();
                         alert.show();
             }
@@ -176,13 +182,45 @@ public class UserOrderActivity extends AppCompatActivity {
 
     public void createUserOrderList() {
         mUserOrderList = new ArrayList<>();
-        mUserOrderList.add(new UserOrder("Beyaz Ekmek"));
-        mUserOrderList.add(new UserOrder("Kepek Ekmegi"));
-        mUserOrderList.add(new UserOrder("Cavdar Ekmegi"));
-        mUserOrderList.add(new UserOrder("TamBudgay Ekmegi"));
+        mUserOrderList.add(new UserOrder("Beyaz Ekmek","0"));
+        mUserOrderList.add(new UserOrder("Kepek Ekmegi","0"));
+        mUserOrderList.add(new UserOrder("Cavdar Ekmegi","0"));
+        mUserOrderList.add(new UserOrder("TamBugday Ekmegi","0"));
+        mUserOrderList.add(new UserOrder("TorkuSüt","0"));
+        mUserOrderList.add(new UserOrder("PınarSüt","0"));
+        mUserOrderList.add(new UserOrder("IcımSüt","0"));
+        mUserOrderList.add(new UserOrder("SutasSüt","0"));
+        mUserOrderList.add(new UserOrder("Hürriyet Gazetesi","0"));
+        mUserOrderList.add(new UserOrder("Cumhuriyet Gazetesi","0"));
+        mUserOrderList.add(new UserOrder("Posta Gazetesi","0"));
 
 
     }
+
+    public void changeItem(int position, int count) {
+
+        mUserOrderList.get(position).changeCount(""+count);
+        mAdapter.notifyItemChanged(position);
+
+    }
+
+    public void resetAll() {
+        for (int i = 0; i < mUserOrderList.size(); i++) {
+            mUserOrderList.get(i).changeCount("0");
+            mAdapter.notifyItemChanged(i);
+        }
+    }
+
+    public void createOrder() {
+        for (int i = 0; i < mUserOrderList.size(); i++) {
+            int sayi = Integer.parseInt(mUserOrderList.get(i).getCount());
+            if (sayi > 0) {
+                text += mUserOrderList.get(i).getText() + " X" + sayi + "\n";
+            }
+        }
+
+    }
+
     public void buildRecyclerView() {
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
@@ -195,14 +233,88 @@ public class UserOrderActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new UserOrderAdapter.OnItemClickListener() {
             @Override
             public void onAddClick(int position) {
-                Toast.makeText(UserOrderActivity.this,
-                        "Oylesine", Toast.LENGTH_LONG).show();
+                UserOrder click;
+                click = mUserOrderList.get(position);
+                String str = mUserOrderList.get(position).getText();
+                if (str.equals("Beyaz Ekmek")) {
+                    changeItem(position, Integer.parseInt(click.getCount())+ 1);
+                }
+                else  if (str.equals("Kepek Ekmegi")) {
+                    changeItem(position, Integer.parseInt(click.getCount())+ 1);
+                }
+                else  if (str.equals("Cavdar Ekmegi")) {
+                    changeItem(position, Integer.parseInt(click.getCount())+ 1);
+                }
+                else  if (str.equals("TamBugday Ekmegi")) {
+                    changeItem(position, Integer.parseInt(click.getCount())+ 1);
+                }
+                else  if (str.equals("TorkuSüt")) {
+                    changeItem(position, Integer.parseInt(click.getCount())+ 1);
+                }
+                else  if (str.equals("PınarSüt")) {
+                    changeItem(position, Integer.parseInt(click.getCount())+ 1);
+                }
+                else  if (str.equals("IcımSüt")) {
+                    changeItem(position, Integer.parseInt(click.getCount())+ 1);
+                }
+                else  if (str.equals("SutasSüt")) {
+                    changeItem(position, Integer.parseInt(click.getCount())+ 1);
+                }
+                else  if (str.equals("Hürriyet Gazetesi")) {
+                    changeItem(position, Integer.parseInt(click.getCount())+ 1);
+                }
+                else  if (str.equals("Cumhuriyet Gazetesi")) {
+                    changeItem(position, Integer.parseInt(click.getCount())+ 1);
+                }
+                else  if (str.equals("Posta Gazetesi")) {
+                    changeItem(position, Integer.parseInt(click.getCount())+ 1);
+                }
+
+
+
             }
 
             @Override
             public void onDeleteClick(int position) {
-                Toast.makeText(UserOrderActivity.this,
-                        "Oylesine2", Toast.LENGTH_LONG).show();
+                UserOrder click;
+                click = mUserOrderList.get(position);
+                String str = mUserOrderList.get(position).getText();
+                if (str.equals("Beyaz Ekmek") && Integer.parseInt(click.getCount()) > 0) {
+                    changeItem(position, Integer.parseInt(click.getCount())- 1);
+                }
+                else  if (str.equals("Kepek Ekmegi") && Integer.parseInt(click.getCount()) > 0) {
+                    changeItem(position, Integer.parseInt(click.getCount())- 1);
+                }
+                else  if (str.equals("Cavdar Ekmegi") && Integer.parseInt(click.getCount()) > 0) {
+                    changeItem(position, Integer.parseInt(click.getCount())- 1);
+                }
+                else  if (str.equals("TamBugday Ekmegi") && Integer.parseInt(click.getCount()) > 0) {
+                    changeItem(position, Integer.parseInt(click.getCount())- 1);
+                }
+                else  if (str.equals("TorkuSüt")&& Integer.parseInt(click.getCount()) > 0) {
+                    changeItem(position, Integer.parseInt(click.getCount())- 1);
+                }
+                else  if (str.equals("PınarSüt")) {
+                    changeItem(position, Integer.parseInt(click.getCount())- 1);
+                }
+                else  if (str.equals("IcımSüt")) {
+                    changeItem(position, Integer.parseInt(click.getCount())- 1);
+                }
+                else  if (str.equals("SutasSüt")) {
+                    changeItem(position, Integer.parseInt(click.getCount())- 1);
+                }
+                else  if (str.equals("Hürriyet Gazetesi")) {
+                    changeItem(position, Integer.parseInt(click.getCount())- 1);
+                }
+                else  if (str.equals("Cumhuriyet Gazetesi")) {
+                    changeItem(position, Integer.parseInt(click.getCount())- 1);
+                }
+                else  if (str.equals("Posta Gazetesi")) {
+                    changeItem(position, Integer.parseInt(click.getCount())- 1);
+                }
+
+
+
             }
         });
 

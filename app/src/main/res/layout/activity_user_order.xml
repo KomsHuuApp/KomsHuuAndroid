@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="5dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="90dp"
         android:scrollbars="vertical"
         android:background="@android:color/darker_gray">
 
@@ -21,13 +21,13 @@
 
     <Button
         android:id="@+id/deleteButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="199dp"
-        android:layout_marginLeft="199dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
         android:layout_marginBottom="0dp"
         android:text="İPTAL"
         tools:layout_editor_absoluteX="215dp"
@@ -35,15 +35,15 @@
 
     <Button
         android:id="@+id/submitButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="463dp"
-        android:layout_marginEnd="215dp"
-        android:layout_marginRight="215dp"
-        android:text="Gönder"
+        android:layout_marginTop="419dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:text="Sepete Ekle"
         tools:layout_editor_absoluteX="48dp"
         tools:layout_editor_absoluteY="359dp" />
 
