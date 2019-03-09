@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     EditText editText;
     RecyclerView recyclerView;
     ArrayList<Announcement> announcementList;
+    AnnouncementAdapter announcementAdapter;
     String server_url = "https://enigmatic-atoll-89666.herokuapp.com/addComplaint";
     TextView textViewName;
     TextView textViewUserName;
@@ -153,14 +154,18 @@ public class MainActivity extends AppCompatActivity
                                 JSONObject announcement = announcements.getJSONObject(i);
                                 Announcement temp = new Announcement();
                                 temp.setImageID(R.drawable.ic_menu_gallery);
+                                temp.setAnnouncementId(announcement.getLong("announcementId"));
                                 temp.setAnnouncementDate(announcement.getString("announcementDate"));
                                 temp.setAnnouncementDescription(announcement.getString("text"));
+                                temp.setApartmentId(announcement.getLong("apartmentId"));
+                                temp.setAnnouncementImportance(announcement.getInt("announcementImportance"));
+                                temp.setAnnouncerId(announcement.getLong("announcerId"));
                                 announcementList.add(temp);
                             }
                             recyclerView = (RecyclerView) findViewById(R.id.recylerview);
 
-                            AnnouncementAdapter productAdapter = new AnnouncementAdapter(MainActivity.this, announcementList);
-                            recyclerView.setAdapter(productAdapter);
+                            announcementAdapter = new AnnouncementAdapter(MainActivity.this, announcementList);
+                            recyclerView.setAdapter(announcementAdapter);
 
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
                             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -176,7 +181,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
         queue.add(stringRequest);
-
     }
 
     @Override
