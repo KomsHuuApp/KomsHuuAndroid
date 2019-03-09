@@ -16,7 +16,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
+        android:src="@drawable/ic_delete_red_24dp"
+
         android:orientation="horizontal">
+
 
         <ImageView
             android:id="@+id/emergencyImage"
@@ -85,10 +88,9 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginBottom="5dp"
                 android:src="@drawable/ic_delete_red_24dp"
-                android:visibility="visible"
-                android:onClick="delete"/>
+                android:layout_marginBottom="5dp"
+                android:visibility="visible"/>
             <ImageView
                 android:id="@+id/editproduct"
                 android:layout_width="25dp"
