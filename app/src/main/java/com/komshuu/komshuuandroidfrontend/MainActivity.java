@@ -115,6 +115,15 @@ public class MainActivity extends AppCompatActivity
 
                             int responseCode = httpCon.getResponseCode();
                             System.out.println("response code: " + responseCode);
+                            if(responseCode == 200){
+                                LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linear_layout);
+                                Snackbar.make(linearLayout, "Şikayetiniz gönderildi.", Snackbar.LENGTH_LONG)
+                                        .setAction("DISMISS", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                            }
+                                        }).show();
+                            }
                         } catch (ProtocolException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
@@ -124,6 +133,7 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
                 });
+
             }
         });
 

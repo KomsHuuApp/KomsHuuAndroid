@@ -1,9 +1,13 @@
 package com.komshuu.komshuuandroidfrontend;
 
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,7 +24,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ComplaintActivity extends AppCompatActivity {
     ArrayList<Complaint> complaintList;
@@ -40,11 +51,14 @@ public class ComplaintActivity extends AppCompatActivity {
                         complaintList = new ArrayList<>();
                         try {
                             JSONArray complaints = new JSONArray(response);
-                            for(int i = 0; i < complaints.length(); i++) {
+                            for (int i = 0; i < complaints.length(); i++) {
                                 JSONObject complaint = complaints.getJSONObject(i);
                                 Complaint temp = new Complaint();
                                 temp.setComplaintDate(complaint.getString("date"));
                                 temp.setComplaintDescription(complaint.getString("text"));
+                                temp.setComplaintID(complaint.getString("complaintId"));
+                                temp.setPersonID(complaint.getString("personId"));
+                                temp.setApartmentID(complaint.getString("apartmentId"));
                                 complaintList.add(temp);
                             }
                             recyclerView = (RecyclerView) findViewById(R.id.recylerview);
@@ -62,11 +76,14 @@ public class ComplaintActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //bos iken
+
             }
         });
         queue.add(stringRequest);
 
     }
+
+
+
 }
 
