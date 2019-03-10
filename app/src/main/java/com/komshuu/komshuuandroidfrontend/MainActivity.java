@@ -1,13 +1,16 @@
 package com.komshuu.komshuuandroidfrontend;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -22,11 +25,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.komshuu.komshuuandroidfrontend.adapters.AnnouncementAdapter;
@@ -148,7 +153,7 @@ public class MainActivity extends AppCompatActivity
         textViewName = (TextView) mHeaderView.findViewById(R.id.textViewName);
         textViewUserName = (TextView) mHeaderView.findViewById(R.id.textViewUserName);
         Intent intent = getIntent();
-        User user = (User) intent.getSerializableExtra("user");
+        final User user = (User) intent.getSerializableExtra("user");
         textViewName.setText(user.getName() + " " + user.getSurname());
         textViewUserName.setText(user.getUsername());
         navigationView.setNavigationItemSelectedListener(this);
@@ -182,7 +187,7 @@ public class MainActivity extends AppCompatActivity
                             }
                             recyclerView = (RecyclerView) findViewById(R.id.recylerview);
 
-                            announcementAdapter = new AnnouncementAdapter(MainActivity.this, announcementList);
+                            announcementAdapter = new AnnouncementAdapter(MainActivity.this, announcementList, user.getRole());
                             recyclerView.setAdapter(announcementAdapter);
 
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
@@ -212,8 +217,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        Intent intent = getIntent();
+        User user = (User) intent.getSerializableExtra("user");
+        if(user.getRole() == 1) {
+            getMenuInflater().inflate(R.menu.main, menu);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -223,12 +233,56 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        Intent intent = getIntent();
+        final User user = (User) intent.getSerializableExtra("user");
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_new_announcement) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View view = getLayoutInflater().inflate(R.layout.announcement_add_layout, null);
+            final EditText editTextAnnouncementDescription = (EditText) view.findViewById(R.id.add_announcement_description);
+            builder.setView(view)
+                    .setTitle("Yeni Duyuru")
+                    .setNegativeButton("İptal", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .setPositiveButton("Paylaş", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+                            String url ="https://enigmatic-atoll-89666.herokuapp.com/addAnnouncement";
+                            JSONObject jsonObject = new JSONObject();
+                            try {
+                                jsonObject.put("text", editTextAnnouncementDescription.getText());
+                                jsonObject.put("announcementDate", "10/03/2019");
+                                jsonObject.put("announcementImportance", 3);
+                                jsonObject.put("announcerId", 1);
+                                jsonObject.put("apartmentId", 1);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    Toast.makeText(MainActivity.this, "Duyuru paylaşıldı.", Toast.LENGTH_LONG).show();
+                                    Intent i = new Intent(MainActivity.this, MainActivity.class);
+                                    i.putExtra("user", user);
+                                    startActivity(i);
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Toast.makeText(MainActivity.this, "Duyuru paylaşılamadı.", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                            queue.add(jsonObjectRequest);
+                        }
+                    });
+            AlertDialog addDialog = builder.create();
+            addDialog.show();
             return true;
-        }
-        else if (id == R.id.action_logout) {
-            super.onBackPressed();
         }
 
         return super.onOptionsItemSelected(item);

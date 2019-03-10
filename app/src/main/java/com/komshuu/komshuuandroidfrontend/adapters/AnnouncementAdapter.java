@@ -27,11 +27,13 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
     ArrayList<Announcement> mAnnouncementList;
     LayoutInflater inflater;
     Context context;
+    long role;
 
-    public AnnouncementAdapter(Context context, ArrayList<Announcement> products) {
+    public AnnouncementAdapter(Context context, ArrayList<Announcement> products, long role) {
         inflater = LayoutInflater.from(context);
         this.mAnnouncementList = products;
         this.context = context;
+        this.role = role;
     }
 
 
@@ -73,6 +75,10 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
             edit = (ImageView) itemView.findViewById(R.id.edit_announcement);
             deleteproduct.setOnClickListener(this);
             edit.setOnClickListener(this);
+            if (role != 1) {
+                deleteproduct.setVisibility(View.INVISIBLE);
+                edit.setVisibility(View.INVISIBLE);
+            }
         }
 
         public void setData(Announcement selectedProduct, int position) {
