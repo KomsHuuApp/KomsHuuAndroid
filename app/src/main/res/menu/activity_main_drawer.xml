@@ -3,44 +3,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/group_feature" android:checkableBehavior="single">
         <item
             android:id="@+id/nav_apartment"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_menu_outline_apartment"
             android:title="Apartman" />
         <item
             android:id="@+id/nav_flat"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_menu_outline_flat"
             android:title="Daire" />
         <item
             android:id="@+id/nav_dues"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_menu_outline_due"
             android:title="Aidat" />
         <item
             android:id="@+id/nav_order"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_menu_outline_order"
             android:title="Sipariş" />
         <item
             android:id="@+id/nav_numbers"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_menu_outline_call"
             android:title="Önemli Numaralar" />
         <item
             android:id="@+id/complaints"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_menu_outline_complaint"
             android:title="Şikayetler" />
+        <item
+            android:id="@+id/nav_poll"
+            android:icon="@drawable/ic_menu_outline_poll"
+            android:title="Oylama" />
+        <item
+            android:id="@+id/nav_warn"
+            android:icon="@drawable/ic_menu_outline_report"
+            android:title="Uyarı" />
     </group>
 
-    <item android:title="Communicate">
-        <menu>
+    <group android:id="@+id/group_setting" android:checkableBehavior="single">
             <item
-                android:id="@+id/nav_poll"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Oylama" />
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_menu_outline_settings"
+                android:title="Ayarlar" />
             <item
-                android:id="@+id/nav_warn"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Uyarı" />
-        </menu>
-    </item>
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_menu_outline_logout"
+                android:title="Çıkış" />
+    </group>
 
 </menu>

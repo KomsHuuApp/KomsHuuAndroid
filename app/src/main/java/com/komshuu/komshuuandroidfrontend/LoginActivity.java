@@ -3,8 +3,12 @@ package com.komshuu.komshuuandroidfrontend;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +33,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -73,6 +78,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +93,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
                     return true;
                 }
                 return false;
@@ -98,6 +103,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                dialog = new ProgressDialog(LoginActivity.this);
+                dialog.setMessage("Giriş yapılıyor...");
+                dialog.setCancelable(false);
+                dialog.setInverseBackgroundForced(false);
+                dialog.show();
                 attemptLogin();
             }
         });
@@ -174,9 +184,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 object.getInt("flatNumber"));
                         Intent mainActivity = new Intent(LoginActivity.this, MainActivity.class);
                         mainActivity.putExtra("user", user);
+                        dialog.dismiss();
                         startActivity(mainActivity);
                     }
+                    else {
+                        dialog.setMessage("Giriş yapılamadı!");
+                    }
                 } catch (JSONException e) {
+                    dialog.dismiss();
+                    Toast.makeText(LoginActivity.this, "Hatalı kullanıcı adı/şifre!",
+                            Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
             }

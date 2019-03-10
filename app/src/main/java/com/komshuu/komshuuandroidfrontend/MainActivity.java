@@ -147,8 +147,10 @@ public class MainActivity extends AppCompatActivity
         mHeaderView = navigationView.getHeaderView(0);
         textViewName = (TextView) mHeaderView.findViewById(R.id.textViewName);
         textViewUserName = (TextView) mHeaderView.findViewById(R.id.textViewUserName);
-        textViewName.setText("Arda Arslan");
-        textViewUserName.setText("aarslan");
+        Intent intent = getIntent();
+        User user = (User) intent.getSerializableExtra("user");
+        textViewName.setText(user.getName() + " " + user.getSurname());
+        textViewUserName.setText(user.getUsername());
         navigationView.setNavigationItemSelectedListener(this);
 
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -163,12 +165,18 @@ public class MainActivity extends AppCompatActivity
                             for(int i = 0; i < announcements.length(); i++) {
                                 JSONObject announcement = announcements.getJSONObject(i);
                                 Announcement temp = new Announcement();
-                                temp.setImageID(R.drawable.ic_menu_gallery);
                                 temp.setAnnouncementId(announcement.getLong("announcementId"));
                                 temp.setAnnouncementDate(announcement.getString("announcementDate"));
                                 temp.setAnnouncementDescription(announcement.getString("text"));
                                 temp.setApartmentId(announcement.getLong("apartmentId"));
-                                temp.setAnnouncementImportance(announcement.getInt("announcementImportance"));
+                                int importance = announcement.getInt("announcementImportance");
+                                if(importance == 1)
+                                    temp.setImageID(R.drawable.ic_outline_priority_red);
+                                else if (importance == 2)
+                                    temp.setImageID(R.drawable.ic_outline_priority_yellow);
+                                else
+                                    temp.setImageID(R.drawable.ic_outline_priority_green);
+                                temp.setAnnouncementImportance(importance);
                                 temp.setAnnouncerId(announcement.getLong("announcerId"));
                                 announcementList.add(temp);
                             }
@@ -262,6 +270,10 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_warn) {
 
+        } else if (id == R.id.nav_settings) {
+
+        } else if (id == R.id.nav_logout) {
+            super.onBackPressed();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -18,56 +18,27 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ApartmentActivity"
-            android:label="@string/apartment"
-            android:parentActivityName=".MainActivity">
-
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+            android:label="@string/apartment">
         </activity>
         <activity
             android:name=".EmergencyNumbersActivity"
-            android:label="@string/emergency_number"
-            android:parentActivityName=".MainActivity">
-
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+            android:label="@string/emergency_number">
         </activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/homepage"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
             android:name=".UserOrderActivity"
-            android:label="@string/order"
-            android:parentActivityName=".MainActivity">
-
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+            android:label="@string/order">
         </activity>
         <activity
             android:name=".FlatActivity"
-            android:label="@string/flat"
-            android:parentActivityName=".MainActivity">
-
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+            android:label="@string/flat">
         </activity>
         <activity
-            android:name=".KomshuuActivity"
-            android:parentActivityName=".FlatActivity">
-
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".FlatActivity" />
+            android:name=".KomshuuActivity">
         </activity>
         <activity
             android:name=".LoginActivity"
@@ -80,13 +51,7 @@
         </activity>
         <activity
             android:name=".ComplaintActivity"
-            android:label="@string/complaints"
-            android:parentActivityName=".MainActivity">
-
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+            android:label="@string/complaints">
         </activity>
     </application>
 

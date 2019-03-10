@@ -7,9 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,7 +17,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.komshuu.komshuuandroidfrontend.MainActivity;
 import com.komshuu.komshuuandroidfrontend.models.Announcement;
 import com.komshuu.komshuuandroidfrontend.R;
 
@@ -59,7 +58,7 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView announcementDate, announcementDescription;
-        ImageView announcementImage, deleteproduct;
+        ImageView announcementImage, deleteproduct, edit;
 
         private long announcementId, announcerId, apartmentId;
         private int announcementImportance;
@@ -71,8 +70,9 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
             announcementDescription = (TextView) itemView.findViewById(R.id.announcementDescription);
             announcementImage = (ImageView) itemView.findViewById(R.id.announcementImage);
             deleteproduct = (ImageView) itemView.findViewById(R.id.deleteproduct);
+            edit = (ImageView) itemView.findViewById(R.id.edit_announcement);
             deleteproduct.setOnClickListener(this);
-
+            edit.setOnClickListener(this);
         }
 
         public void setData(Announcement selectedProduct, int position) {
@@ -90,38 +90,60 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
 
         @Override
         public void onClick(View v) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Emin misiniz");
-            builder.setMessage("Onaylandıktan sonra geri alınamaz");
-            builder.setPositiveButton("TAMAM", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    RequestQueue queue = Volley.newRequestQueue(context);
-                    String url ="https://enigmatic-atoll-89666.herokuapp.com/deleteAnnouncement?id=" +
-                            announcementId + "&apartmentId=" + apartmentId;
-                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
+            int viewId = v.getId();
+            if(viewId == R.id.deleteproduct){
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Silmek istediğinize emin misiniz?");
+                builder.setPositiveButton("TAMAM", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        RequestQueue queue = Volley.newRequestQueue(context);
+                        String url ="https://enigmatic-atoll-89666.herokuapp.com/deleteAnnouncement?id=" +
+                                announcementId + "&apartmentId=" + apartmentId;
+                        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
 
-                        }
-                    });
-                    queue.add(stringRequest);
-                    mAnnouncementList.remove(getPosition());
-                    notifyItemRemoved(getPosition());
-                    notifyItemRangeChanged(getPosition(), mAnnouncementList.size());
-                }
-            });
-            builder.setNegativeButton("İPTAL", new DialogInterface.OnClickListener(){
-                public void onClick(DialogInterface dialog, int id) {
+                            }
+                        });
+                        queue.add(stringRequest);
+                        mAnnouncementList.remove(getPosition());
+                        notifyItemRemoved(getPosition());
+                        notifyItemRangeChanged(getPosition(), mAnnouncementList.size());
+                    }
+                });
+                builder.setNegativeButton("İPTAL", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int id) {
 
-                    //İptal butonuna basılınca yapılacaklar.Sadece kapanması isteniyorsa boş bırakılacak
+                    }
+                });
+                builder.show();
+            }
+            else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                View view = inflater.inflate(R.layout.announcement_edit_layout, null);
+                EditText editTextAnnouncementDescription = (EditText) view.findViewById(R.id.edit_announcement_description);
+                editTextAnnouncementDescription.setText(announcementDescription.getText());
+                builder.setView(view)
+                        .setTitle("Düzenle")
+                        .setNegativeButton("İptal", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                }
-            });
-            builder.show();
+                            }
+                        })
+                        .setPositiveButton("Kaydet", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                AlertDialog editDialog = builder.create();
+                editDialog.show();
+            }
         }
     }
 }
