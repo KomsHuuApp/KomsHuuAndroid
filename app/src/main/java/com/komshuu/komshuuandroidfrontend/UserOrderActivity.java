@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -48,10 +50,14 @@ public class UserOrderActivity extends AppCompatActivity {
 
     String server_url = "https://enigmatic-atoll-89666.herokuapp.com/addOrder";
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_order);
+
+
 
 
         createUserOrderList();
@@ -78,43 +84,53 @@ public class UserOrderActivity extends AppCompatActivity {
                                 Calendar cal = Calendar.getInstance();
                                 cal.add(Calendar.HOUR_OF_DAY, 3);
                                 String time= new SimpleDateFormat("dd MMM yyyy HH:mm").format(cal.getTime());
+                                if (text.equals("")) {
+                                    AlertDialog.Builder builder4 = new AlertDialog.Builder(UserOrderActivity.this);
+                                    builder4.setMessage("Mevcut Siparisiniz Bulunmamaktadir");
+                                    builder4.setPositiveButton("Tamam", null);
 
-                                try{
-                                    URL url = new URL(server_url);
-                                    HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-                                    httpCon.setDoOutput(true);
-                                    httpCon.setRequestProperty("Content-Type", "application/x-www-form-urlencoded" );
-                                    httpCon.setRequestMethod("POST");
-                                    httpCon.setRequestProperty("Content-Type","application/json");
-                                    JSONObject eventObject = new JSONObject();
-                                    eventObject.put("orderType",text);
-                                    eventObject.put("apartmentId", new Long(2));
-                                    eventObject.put("orderDate", time);
-                                    String json = eventObject.toString();
+                                    AlertDialog alert3 = builder4.create();
+                                    alert3.show();
+                                }
+                                else {
+                                    try {
+                                        URL url = new URL(server_url);
+                                        HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+                                        httpCon.setDoOutput(true);
+                                        httpCon.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                                        httpCon.setRequestMethod("POST");
+                                        httpCon.setRequestProperty("Content-Type", "application/json");
+                                        JSONObject eventObject = new JSONObject();
+                                        eventObject.put("orderType", text);
+                                        eventObject.put("apartmentId", new Long(2));
+                                        eventObject.put("orderDate", time);
+                                        String json = eventObject.toString();
 
-                                    byte[] outputInBytes = json.getBytes("UTF-8");
-                                    OutputStream os = httpCon.getOutputStream();
-                                    os.write( outputInBytes );
-                                    os.close();
+                                        byte[] outputInBytes = json.getBytes("UTF-8");
+                                        OutputStream os = httpCon.getOutputStream();
+                                        os.write(outputInBytes);
+                                        os.close();
 
-                                    int responseCode = httpCon.getResponseCode();
-                                    System.out.println("response code: " + responseCode);
-                                    if (responseCode == 200) {
-                                        AlertDialog.Builder builder1 = new AlertDialog.Builder(UserOrderActivity.this);
-                                        builder1.setMessage("Siparisiniz Basarıyla iletilmistir");
-                                        builder1.setPositiveButton("Tamam", null);
+                                        int responseCode = httpCon.getResponseCode();
+                                        System.out.println("response code: " + responseCode);
+                                        if (responseCode == 200) {
+                                            AlertDialog.Builder builder1 = new AlertDialog.Builder(UserOrderActivity.this);
+                                            builder1.setMessage("Siparisiniz Basarıyla iletilmistir");
+                                            builder1.setPositiveButton("Tamam", null);
 
-                                        AlertDialog alert2 = builder1.create();
-                                        alert2.show();
+                                            AlertDialog alert2 = builder1.create();
+                                            alert2.show();
 
+                                        }
+                                        text = "";
+
+                                    } catch (ProtocolException e) {
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-                                    text = "";
-                                } catch (ProtocolException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
                                 }
 
                             }
@@ -178,6 +194,13 @@ public class UserOrderActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.order_menu,menu);
+        return true;
     }
 
     public void createUserOrderList() {
@@ -294,22 +317,22 @@ public class UserOrderActivity extends AppCompatActivity {
                 else  if (str.equals("TorkuSüt")&& Integer.parseInt(click.getCount()) > 0) {
                     changeItem(position, Integer.parseInt(click.getCount())- 1);
                 }
-                else  if (str.equals("PınarSüt")) {
+                else  if (str.equals("PınarSüt") && Integer.parseInt(click.getCount()) > 0) {
                     changeItem(position, Integer.parseInt(click.getCount())- 1);
                 }
-                else  if (str.equals("IcımSüt")) {
+                else  if (str.equals("IcımSüt") && Integer.parseInt(click.getCount()) > 0) {
                     changeItem(position, Integer.parseInt(click.getCount())- 1);
                 }
-                else  if (str.equals("SutasSüt")) {
+                else  if (str.equals("SutasSüt") && Integer.parseInt(click.getCount()) > 0) {
                     changeItem(position, Integer.parseInt(click.getCount())- 1);
                 }
-                else  if (str.equals("Hürriyet Gazetesi")) {
+                else  if (str.equals("Hürriyet Gazetesi") && Integer.parseInt(click.getCount()) > 0) {
                     changeItem(position, Integer.parseInt(click.getCount())- 1);
                 }
-                else  if (str.equals("Cumhuriyet Gazetesi")) {
+                else  if (str.equals("Cumhuriyet Gazetesi") && Integer.parseInt(click.getCount()) > 0) {
                     changeItem(position, Integer.parseInt(click.getCount())- 1);
                 }
-                else  if (str.equals("Posta Gazetesi")) {
+                else  if (str.equals("Posta Gazetesi") && Integer.parseInt(click.getCount()) > 0) {
                     changeItem(position, Integer.parseInt(click.getCount())- 1);
                 }
 
