@@ -65,9 +65,13 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
             apartmentId = (TextView) itemView.findViewById(R.id.apartmentId);
             emergencyCallImage = (ImageView) itemView.findViewById(R.id.emergencyImage);
             deleteProduct = (ImageView) itemView.findViewById(R.id.deleteproduct);
-            deleteProduct.setOnClickListener(this);
             editProduct = (ImageView) itemView.findViewById(R.id.editproduct);
             editProduct.setOnClickListener(this);
+            deleteProduct.setOnClickListener(this);
+            /*if (role != 1) {
+                deleteProduct.setVisibility(View.INVISIBLE);
+                editProduct.setVisibility(View.INVISIBLE);
+            }*/
         }
 
         public void setData(EmergencyCallNumber selectedProduct, int position) {
@@ -81,37 +85,40 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
 
         @Override
         public void onClick(View v) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Are you sure?");
-            builder.setMessage("After this process, the deleted data can not be retrieve");
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    RequestQueue queue = Volley.newRequestQueue(context);
-                    System.out.println(emergencyId.getText() + " " + emergencyCallName.getText());
-                    String url = "https://enigmatic-atoll-89666.herokuapp.com/deleteEmergencyNumber?id=" + emergencyId.getText() + "&apartmentId=" + apartmentId.getText();
-                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
+            int id = v.getId();
+            if (id == R.id.deleteproduct) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Are you sure?");
+                builder.setMessage("After this process, the deleted data can not be retrieve");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        RequestQueue queue = Volley.newRequestQueue(context);
+                        System.out.println(emergencyId.getText() + " " + emergencyCallName.getText());
+                        String url = "https://enigmatic-atoll-89666.herokuapp.com/deleteEmergencyNumber?id=" + emergencyId.getText() + "&apartmentId=" + apartmentId.getText();
+                        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
 
-                        }
-                    });
-                    queue.add(stringRequest);
-                    mEmergencyCallNumberList.remove(getPosition());
-                    notifyItemRemoved(getPosition());
-                    notifyItemRangeChanged(getPosition(), mEmergencyCallNumberList.size());
-                }
-            });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
+                            }
+                        });
+                        queue.add(stringRequest);
+                        mEmergencyCallNumberList.remove(getPosition());
+                        notifyItemRemoved(getPosition());
+                        notifyItemRangeChanged(getPosition(), mEmergencyCallNumberList.size());
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
 
-                }
-            });
-            builder.show();
+                    }
+                });
+                builder.show();
+            }
         }
     }
 }
