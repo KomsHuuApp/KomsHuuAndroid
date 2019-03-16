@@ -18,28 +18,21 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ApartmentActivity"
-            android:label="@string/apartment">
-        </activity>
+            android:label="@string/apartment"></activity>
         <activity
             android:name=".EmergencyNumbersActivity"
-            android:label="@string/emergency_number">
-        </activity>
+            android:label="@string/emergency_number"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/homepage"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".UserOrderActivity"
-            android:label="@string/order">
-        </activity>
+            android:label="@string/order"></activity>
         <activity
             android:name=".FlatActivity"
-            android:label="@string/flat">
-        </activity>
-        <activity
-            android:name=".KomshuuActivity">
-        </activity>
+            android:label="@string/flat"></activity>
+        <activity android:name=".KomshuuActivity"></activity>
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login">
@@ -51,8 +44,7 @@
         </activity>
         <activity
             android:name=".ComplaintActivity"
-            android:label="@string/complaints">
-        </activity>
+            android:label="@string/complaints"></activity>
     </application>
 
 </manifest>
