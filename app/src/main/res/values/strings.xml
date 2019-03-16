@@ -13,6 +13,7 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_new_announcement">Yeni Duyuru</string>
+    <string name="action_new_emergency">Yeni Acil Numara</string>
     <string name="action_logout">Çıkış</string>
     <string name="button_text">Siparis ver</string>
     <string name="title_activity_login">Giriş yap</string>
