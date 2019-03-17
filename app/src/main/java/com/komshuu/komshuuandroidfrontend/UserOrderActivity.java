@@ -1,6 +1,7 @@
 package com.komshuu.komshuuandroidfrontend;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.StrictMode;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -45,6 +47,7 @@ public class UserOrderActivity extends AppCompatActivity {
     Button submitButton;
     Button deleteButton;
     String text = "";
+    String not = "";
 
 
 
@@ -156,12 +159,12 @@ public class UserOrderActivity extends AppCompatActivity {
                 createOrder();
                 final AlertDialog.Builder builder1 = new AlertDialog.Builder(UserOrderActivity.this);
                 builder1.setTitle("Siparis İptali");
-                builder1.setMessage("Siparisi iptal etmek istediginizden Emin misiniz?" + "\n" + "Mevcut siparisiniz: " + "\n" + text);
+                builder1.setMessage("Siparisi iptal etmek istediginizden Emin misiniz?" + "\n" + "Mevcut siparisiniz: " + "\n" + text + "Siparis Notunuz:" + not);
                 builder1.setCancelable(true)
                         .setPositiveButton("Evet", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                if (text.equals("")) {
+                                if (text.equals("") && not.equals("")) {
                                     AlertDialog.Builder builder3 = new AlertDialog.Builder(UserOrderActivity.this);
                                     builder3.setMessage("Mevcut Siparisiniz Bulunmamaktadir");
                                     builder3.setPositiveButton("Tamam", null);
@@ -170,6 +173,7 @@ public class UserOrderActivity extends AppCompatActivity {
                                     alert3.show();
                                 }
                                 else {
+                                    not = "";
                                     text = "";
                                     resetAll();
                                     AlertDialog.Builder builder2 = new AlertDialog.Builder(UserOrderActivity.this);
@@ -202,6 +206,68 @@ public class UserOrderActivity extends AppCompatActivity {
         inflater.inflate(R.menu.order_menu,menu);
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.item1:
+                final AlertDialog.Builder builder1 = new AlertDialog.Builder(UserOrderActivity.this);
+                builder1.setTitle("Siparis Notunuzu Giriniz");
+                final EditText et = new EditText(UserOrderActivity.this);
+                et.setHint("Notu giriniz.");
+                builder1.setView(et);
+
+
+                builder1.setPositiveButton("Tamam", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        not = et.getText().toString();
+                        if (not.equals("")) {
+                            AlertDialog.Builder builder3 = new AlertDialog.Builder(UserOrderActivity.this);
+                            builder3.setMessage("Bos Not yollayamassınız. Lutfen tekrar deneyiniz.");
+                            builder3.setPositiveButton("Tamam", null);
+
+                            AlertDialog alert3 = builder3.create();
+                            alert3.show();
+                        }
+                        else {
+                            AlertDialog.Builder builder3 = new AlertDialog.Builder(UserOrderActivity.this);
+                            builder3.setMessage("Notunuz Basarıyla Eklenmistir.");
+                            builder3.setPositiveButton("Tamam", null);
+
+                            AlertDialog alert3 = builder3.create();
+                            alert3.show();
+
+                        }
+                    }
+                });
+                builder1.setNegativeButton("Hayir",null);
+                AlertDialog a = builder1.create();
+                a.show();
+
+                return true;
+            case R.id.item2:
+                AlertDialog.Builder builder3 = new AlertDialog.Builder(UserOrderActivity.this);
+                text = "";
+                createOrder();
+                builder3.setMessage("Mevcut siparisiniz: " + "\n" + text + "Siparis Notunuz:" +  "\n" + not);
+
+                builder3.setPositiveButton("Tamam", null);
+
+                text = "";
+                AlertDialog alert3 = builder3.create();
+                alert3.show();
+
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+
+    }
+
+
 
     public void createUserOrderList() {
         mUserOrderList = new ArrayList<>();
@@ -242,7 +308,9 @@ public class UserOrderActivity extends AppCompatActivity {
             }
         }
 
+
     }
+
 
     public void buildRecyclerView() {
         mRecyclerView = findViewById(R.id.recyclerView);
