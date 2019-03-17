@@ -7,16 +7,25 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.komshuu.komshuuandroidfrontend.EmergencyNumbersActivity;
+import com.komshuu.komshuuandroidfrontend.MainActivity;
 import com.komshuu.komshuuandroidfrontend.models.EmergencyCallNumber;
 import com.komshuu.komshuuandroidfrontend.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -117,6 +126,52 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
                     }
                 });
                 builder.show();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                final View view = inflater.inflate(R.layout.emergency_edit_layout, null);
+                final String emergencyIdText = (String) emergencyId.getText();
+                final String apartmentIdText = (String) apartmentId.getText();
+                final EditText editTextEmergencyDescription = (EditText) view.findViewById(R.id.edit_emergency_description);
+                final EditText editTextEmergencyNumber = (EditText) view.findViewById(R.id.edit_emergency_number);
+                editTextEmergencyDescription.setText(emergencyCallName.getText());
+                editTextEmergencyNumber.setText(emergencyCallNumber.getText());
+                builder.setView(view).setTitle("Düzenleme")
+                        .setNegativeButton("İptal", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).setPositiveButton("Kaydet", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        RequestQueue queue = Volley.newRequestQueue(context);
+                        String url = "https://enigmatic-atoll-89666.herokuapp.com/updateEmergencyNumber";
+                        JSONObject jsonObject = new JSONObject();
+                        try {
+                            jsonObject.put("numberId", emergencyIdText);
+                            jsonObject.put("name", editTextEmergencyDescription.getText());
+                            jsonObject.put("phoneNumber", editTextEmergencyNumber.getText());
+                            jsonObject.put("apartmentId", apartmentIdText);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, jsonObject, new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Toast.makeText(context, "Acil Çağrı numarası güncellenmiştir.", Toast.LENGTH_LONG).show();
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(context, "Acil Çağrı numarası güncellenemedi!", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        queue.add(jsonObjectRequest);
+                    }
+                });
+                AlertDialog editDialog = builder.create();
+                editDialog.show();
+                return;
             }
         }
     }
