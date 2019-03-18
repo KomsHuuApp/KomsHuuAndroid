@@ -321,6 +321,10 @@ public class MainActivity extends AppCompatActivity
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
         } else if (id == R.id.nav_poll) {
+            Intent intent = new Intent(this, PollActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
 
         } else if (id == R.id.nav_warn) {
 

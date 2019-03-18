@@ -43,6 +43,12 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".PollActivity"
+            android:label="Oylama"></activity>
+        <activity
+            android:name=".OptionActivity"
+            android:label="Oylama"></activity>
+        <activity
             android:name=".ComplaintActivity"
             android:label="@string/complaints"></activity>
     </application>
