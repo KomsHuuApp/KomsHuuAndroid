@@ -19,15 +19,15 @@
         <item
             android:id="@+id/nav_order"
             android:icon="@drawable/ic_menu_outline_order"
-            android:title="Sipariş" />
+            android:title="Sipariş Ver" />
+        <item
+            android:id="@+id/nav_order_list"
+            android:icon="@drawable/ic_menu_outline_order"
+            android:title="Siparişler" />
         <item
             android:id="@+id/nav_numbers"
             android:icon="@drawable/ic_menu_outline_call"
             android:title="Önemli Numaralar" />
-        <item
-            android:id="@+id/complaints"
-            android:icon="@drawable/ic_menu_outline_complaint"
-            android:title="Şikayetler" />
         <item
             android:id="@+id/nav_poll"
             android:icon="@drawable/ic_menu_outline_poll"
@@ -36,6 +36,10 @@
             android:id="@+id/nav_warn"
             android:icon="@drawable/ic_menu_outline_report"
             android:title="Uyarı" />
+        <item
+            android:id="@+id/complaints"
+            android:icon="@drawable/ic_menu_outline_complaint"
+            android:title="Şikayetler" />
     </group>
 
     <group android:id="@+id/group_setting" android:checkableBehavior="single">

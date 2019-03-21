@@ -154,6 +154,14 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        if(user.getRole() != 1) {
+            Menu navMenu = navigationView.getMenu();
+            navMenu.findItem(R.id.complaints).setVisible(false);
+        }
+        if(user.getRole() != 3) {
+            Menu navMenu = navigationView.getMenu();
+            navMenu.findItem(R.id.nav_order_list).setVisible(false);
+        }
         mHeaderView = navigationView.getHeaderView(0);
         textViewName = (TextView) mHeaderView.findViewById(R.id.textViewName);
         textViewUserName = (TextView) mHeaderView.findViewById(R.id.textViewUserName);
@@ -320,26 +328,26 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
+        } else if (id == R.id.nav_order_list) {
+
         } else if (id == R.id.nav_numbers) {
             Intent intent = new Intent(this, EmergencyNumbersActivity.class);
             intent.putExtra("user", user);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        }
-        else if (id == R.id.complaints) {
-            Intent intent = new Intent(this, ComplaintActivity.class);
-            intent.putExtra("user", user);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
         } else if (id == R.id.nav_poll) {
             Intent intent = new Intent(this, PollActivity.class);
             intent.putExtra("user", user);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
-
         } else if (id == R.id.nav_warn) {
+
+        } else if (id == R.id.complaints) {
+            Intent intent = new Intent(this, ComplaintActivity.class);
+            intent.putExtra("user", user);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
         } else if (id == R.id.nav_settings) {
 
