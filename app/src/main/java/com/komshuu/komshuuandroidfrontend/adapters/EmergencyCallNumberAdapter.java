@@ -19,8 +19,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.komshuu.komshuuandroidfrontend.EmergencyNumbersActivity;
-import com.komshuu.komshuuandroidfrontend.MainActivity;
 import com.komshuu.komshuuandroidfrontend.models.EmergencyCallNumber;
 import com.komshuu.komshuuandroidfrontend.R;
 
@@ -34,11 +32,13 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
     ArrayList<EmergencyCallNumber> mEmergencyCallNumberList;
     LayoutInflater inflater;
     Context context;
+    long role;
 
-    public EmergencyCallNumberAdapter(Context context, ArrayList<EmergencyCallNumber> product) {
+    public EmergencyCallNumberAdapter(Context context, ArrayList<EmergencyCallNumber> product, long role) {
         inflater = LayoutInflater.from(context);
         this.mEmergencyCallNumberList = product;
         this.context = context;
+        this.role = role;
     }
 
     @Override
@@ -76,10 +76,10 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
             editProduct = (ImageView) itemView.findViewById(R.id.editproduct);
             editProduct.setOnClickListener(this);
             deleteProduct.setOnClickListener(this);
-            /*if (role != 1) {
+            if (role != 1) {
                 deleteProduct.setVisibility(View.INVISIBLE);
                 editProduct.setVisibility(View.INVISIBLE);
-            }*/
+            }
         }
 
         public void setData(EmergencyCallNumber selectedProduct, int position) {

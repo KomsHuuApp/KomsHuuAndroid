@@ -1,5 +1,6 @@
 package com.komshuu.komshuuandroidfrontend;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.komshuu.komshuuandroidfrontend.adapters.ApartmentAdapter;
 import com.komshuu.komshuuandroidfrontend.models.Apartment;
+import com.komshuu.komshuuandroidfrontend.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,10 +30,12 @@ public class ApartmentActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        final User user = (User) intent.getSerializableExtra("user");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emergency_numbers);
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://enigmatic-atoll-89666.herokuapp.com/getApartmentById?apartmentId=2";
+        String url = "https://enigmatic-atoll-89666.herokuapp.com/getApartmentById?apartmentId=" + user.getApartmentId();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
