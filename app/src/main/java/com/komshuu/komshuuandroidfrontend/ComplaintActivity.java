@@ -1,5 +1,6 @@
 package com.komshuu.komshuuandroidfrontend;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.komshuu.komshuuandroidfrontend.adapters.AnnouncementAdapter;
 import com.komshuu.komshuuandroidfrontend.adapters.ComplaintAdapter;
 import com.komshuu.komshuuandroidfrontend.models.Announcement;
 import com.komshuu.komshuuandroidfrontend.models.Complaint;
+import com.komshuu.komshuuandroidfrontend.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,8 +44,10 @@ public class ComplaintActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_complaint);
 
+        Intent parentIntent = getIntent();
+        final User user = (User) parentIntent.getSerializableExtra("user");
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="https://enigmatic-atoll-89666.herokuapp.com/getComplaints?apartmentId=2";
+        String url ="https://enigmatic-atoll-89666.herokuapp.com/getComplaints?apartmentId=" + user.getApartmentId();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override

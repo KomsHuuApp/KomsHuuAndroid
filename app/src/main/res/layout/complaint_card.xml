@@ -4,10 +4,10 @@
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="5dp"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp"
-    android:layout_marginTop="5dp"
+    android:layout_marginBottom="1dp"
+    android:layout_marginLeft="1dp"
+    android:layout_marginRight="1dp"
+    android:layout_marginTop="1dp"
     app:cardCornerRadius="5dp">
 
 
@@ -84,11 +84,11 @@
 
             <ImageView
                 android:id="@+id/deleteproduct"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="5dp"
-                android:src="@drawable/ic_menu_share"></ImageView>
+                android:src="@drawable/ic_outline_delete" />
 
         </LinearLayout>
     </LinearLayout>

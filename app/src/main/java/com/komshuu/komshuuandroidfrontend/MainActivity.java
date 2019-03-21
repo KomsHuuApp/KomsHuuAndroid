@@ -1,5 +1,6 @@
 package com.komshuu.komshuuandroidfrontend;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -62,11 +64,13 @@ public class MainActivity extends AppCompatActivity
     RecyclerView recyclerView;
     ArrayList<Announcement> announcementList;
     AnnouncementAdapter announcementAdapter;
-    String server_url = "https://enigmatic-atoll-89666.herokuapp.com/addComplaint";
+    String server_url = "https://enigmatic-atoll-89666.herokuapp.com/";
     TextView textViewName;
     TextView textViewUserName;
     View mHeaderView;
+    Snackbar snackbar;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,74 +80,84 @@ public class MainActivity extends AppCompatActivity
         Intent intent = getIntent();
         final User user = (User) intent.getSerializableExtra("user");
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        if(user.getRole() == 1) {
+            CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+            p.setAnchorId(View.NO_ID);
+            fab.setLayoutParams(p);
+            fab.setVisibility(View.GONE);
+        }
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linear_layout);
+        snackbar = Snackbar.make(linearLayout, "", Snackbar.LENGTH_INDEFINITE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linear_layout);
+                if(snackbar.isShown()) {
+                    snackbar.dismiss();
+                }
+                else {
+                    LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linear_layout);
+                    snackbar = Snackbar.make(linearLayout, "", Snackbar.LENGTH_INDEFINITE);
+                    Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+                    LayoutInflater objLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View snackView = objLayoutInflater.inflate(R.layout.activity_complaint_box, null); // custom_snac_layout is your custom xml
 
-                final Snackbar snackbar = Snackbar.make(linearLayout, "", Snackbar.LENGTH_INDEFINITE);
+                    layout.addView(snackView, 0);
+                    snackbar.show();
 
-                Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-                LayoutInflater objLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View snackView = objLayoutInflater.inflate(R.layout.activity_complaint_box, null); // custom_snac_layout is your custom xml
+                    editText = (EditText) snackView.findViewById(R.id.et);
+                    sendButton = (Button) snackView.findViewById(R.id.btn);
 
-                layout.addView(snackView, 0);
-                snackbar.show();
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
+                    sendButton.setOnClickListener(new View.OnClickListener() {
 
-                editText = (EditText) snackView.findViewById(R.id.et);
-                sendButton = (Button) snackView.findViewById(R.id.btn);
+                        @Override
+                        public void onClick(View v) {
+                            Calendar cal = Calendar.getInstance();
+                            cal.add(Calendar.HOUR_OF_DAY, 3);
+                            String time = new SimpleDateFormat("dd MMM yyyy HH:mm").format(cal.getTime());
 
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                StrictMode.setThreadPolicy(policy);
-                sendButton.setOnClickListener(new View.OnClickListener() {
+                            try {
+                                URL url = new URL(server_url + "addComplaint");
+                                HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+                                httpCon.setDoOutput(true);
+                                httpCon.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                                httpCon.setRequestMethod("POST");
+                                httpCon.setRequestProperty("Content-Type", "application/json");
+                                JSONObject eventObject = new JSONObject();
+                                eventObject.put("apartmentId", user.getApartmentId());
+                                eventObject.put("date", time);
+                                eventObject.put("personId", user.getId());
+                                eventObject.put("text", editText.getText().toString());
 
-                    @Override
-                    public void onClick(View v) {
-                        Calendar cal = Calendar.getInstance();
-                        cal.add(Calendar.HOUR_OF_DAY, 3);
-                        String time = new SimpleDateFormat("dd MMM yyyy HH:mm").format(cal.getTime());
+                                String json = eventObject.toString();
 
-                        try {
-                            URL url = new URL(server_url);
-                            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-                            httpCon.setDoOutput(true);
-                            httpCon.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                            httpCon.setRequestMethod("POST");
-                            httpCon.setRequestProperty("Content-Type", "application/json");
-                            JSONObject eventObject = new JSONObject();
-                            eventObject.put("apartmentId", new Long(2));
-                            eventObject.put("date", time);
-                            eventObject.put("personId", new Long(2));
-                            eventObject.put("text", editText.getText().toString());
+                                byte[] outputInBytes = json.getBytes("UTF-8");
+                                OutputStream os = httpCon.getOutputStream();
+                                os.write(outputInBytes);
+                                os.close();
 
-                            String json = eventObject.toString();
-
-                            byte[] outputInBytes = json.getBytes("UTF-8");
-                            OutputStream os = httpCon.getOutputStream();
-                            os.write(outputInBytes);
-                            os.close();
-
-                            int responseCode = httpCon.getResponseCode();
-                            System.out.println("response code: " + responseCode);
-                            if(responseCode == 200){
-                                LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linear_layout);
-                                Snackbar.make(linearLayout, "Şikayetiniz gönderildi.", Snackbar.LENGTH_LONG)
-                                        .setAction("DISMISS", new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                            }
-                                        }).show();
+                                int responseCode = httpCon.getResponseCode();
+                                System.out.println("response code: " + responseCode);
+                                if(responseCode == 200){
+                                    LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linear_layout);
+                                    Snackbar.make(linearLayout, "Şikayetiniz gönderildi.", Snackbar.LENGTH_LONG)
+                                            .setAction("DISMISS", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                }
+                                            }).show();
+                                }
+                            } catch (ProtocolException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (ProtocolException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-                    }
-                });
-
+                    });
+                }
             }
         });
 
@@ -158,6 +172,10 @@ public class MainActivity extends AppCompatActivity
             Menu navMenu = navigationView.getMenu();
             navMenu.findItem(R.id.complaints).setVisible(false);
         }
+        if(user.getRole() == 3) {
+            Menu navMenu = navigationView.getMenu();
+            navMenu.findItem(R.id.nav_order).setVisible(false);
+        }
         if(user.getRole() != 3) {
             Menu navMenu = navigationView.getMenu();
             navMenu.findItem(R.id.nav_order_list).setVisible(false);
@@ -170,8 +188,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="https://enigmatic-atoll-89666.herokuapp.com/getAnnouncements?apartmentId=" + user.getApartmentId();
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, server_url + "getAnnouncements?apartmentId=" + user.getApartmentId(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -267,7 +284,6 @@ public class MainActivity extends AppCompatActivity
                             String time = new SimpleDateFormat("dd MMM yyyy").format(cal.getTime());
 
                             RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-                            String url ="https://enigmatic-atoll-89666.herokuapp.com/addAnnouncement";
                             JSONObject jsonObject = new JSONObject();
                             try {
                                 jsonObject.put("text", editTextAnnouncementDescription.getText());
@@ -278,7 +294,7 @@ public class MainActivity extends AppCompatActivity
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+                            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, server_url + "addAnnouncement", jsonObject, new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
                                     Toast.makeText(MainActivity.this, "Duyuru paylaşıldı.", Toast.LENGTH_LONG).show();
