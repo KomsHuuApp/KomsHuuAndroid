@@ -3,6 +3,8 @@ package com.komshuu.komshuuandroidfrontend;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
@@ -23,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +73,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Intent intent = getIntent();
+        final User user = (User) intent.getSerializableExtra("user");
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,14 +157,12 @@ public class MainActivity extends AppCompatActivity
         mHeaderView = navigationView.getHeaderView(0);
         textViewName = (TextView) mHeaderView.findViewById(R.id.textViewName);
         textViewUserName = (TextView) mHeaderView.findViewById(R.id.textViewUserName);
-        Intent intent = getIntent();
-        final User user = (User) intent.getSerializableExtra("user");
         textViewName.setText(user.getName() + " " + user.getSurname());
         textViewUserName.setText(user.getUsername());
         navigationView.setNavigationItemSelectedListener(this);
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="https://enigmatic-atoll-89666.herokuapp.com/getAnnouncements?apartmentId=1";
+        String url ="https://enigmatic-atoll-89666.herokuapp.com/getAnnouncements?apartmentId=" + user.getApartmentId();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -251,15 +254,19 @@ public class MainActivity extends AppCompatActivity
                     .setPositiveButton("Paylaş", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            Calendar cal = Calendar.getInstance();
+                            cal.add(Calendar.HOUR_OF_DAY, 3);
+                            String time = new SimpleDateFormat("dd MMM yyyy").format(cal.getTime());
+
                             RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
                             String url ="https://enigmatic-atoll-89666.herokuapp.com/addAnnouncement";
                             JSONObject jsonObject = new JSONObject();
                             try {
                                 jsonObject.put("text", editTextAnnouncementDescription.getText());
-                                jsonObject.put("announcementDate", "10/03/2019");
-                                jsonObject.put("announcementImportance", 3);
-                                jsonObject.put("announcerId", 1);
-                                jsonObject.put("apartmentId", 1);
+                                jsonObject.put("announcementDate", time);
+                                jsonObject.put("announcementImportance", priority);
+                                jsonObject.put("announcerId", user.getId());
+                                jsonObject.put("apartmentId", user.getApartmentId());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -267,9 +274,7 @@ public class MainActivity extends AppCompatActivity
                                 @Override
                                 public void onResponse(JSONObject response) {
                                     Toast.makeText(MainActivity.this, "Duyuru paylaşıldı.", Toast.LENGTH_LONG).show();
-                                    Intent i = new Intent(MainActivity.this, MainActivity.class);
-                                    i.putExtra("user", user);
-                                    startActivity(i);
+                                    recreate();
                                 }
                             }, new Response.ErrorListener() {
                                 @Override
@@ -292,36 +297,44 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        Intent parentIntent = getIntent();
+        final User user = (User) parentIntent.getSerializableExtra("user");
+
         int id = item.getItemId();
 
         if (id == R.id.nav_apartment) {
             Intent intent = new Intent(this, ApartmentActivity.class);
+            intent.putExtra("user", user);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (id == R.id.nav_flat) {
-            System.out.print(this.toString());
             Intent intent = new Intent(this, FlatActivity.class);
+            intent.putExtra("user", user);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (id == R.id.nav_dues) {
 
         } else if (id == R.id.nav_order) {
             Intent intent = new Intent(this, UserOrderActivity.class);
+            intent.putExtra("user", user);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
         } else if (id == R.id.nav_numbers) {
             Intent intent = new Intent(this, EmergencyNumbersActivity.class);
+            intent.putExtra("user", user);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
         else if (id == R.id.complaints) {
             Intent intent = new Intent(this, ComplaintActivity.class);
+            intent.putExtra("user", user);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
         } else if (id == R.id.nav_poll) {
             Intent intent = new Intent(this, PollActivity.class);
+            intent.putExtra("user", user);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
@@ -337,5 +350,22 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    int priority = 3;
+    public void setPriority(View v) {
+        ImageView view = (ImageView) v;
+        if(v.getId() == R.id.priority_high) {
+            view.setColorFilter(Color.parseColor("#b71c1c"), PorterDuff.Mode.SRC_OUT);
+            priority = 1;
+        }
+        else if(v.getId() == R.id.priority_normal){
+            view.setColorFilter(Color.parseColor("#f9a825"), PorterDuff.Mode.SRC_OUT);
+            priority = 2;
+        }
+        else {
+            view.setColorFilter(Color.parseColor("#4caf50"), PorterDuff.Mode.SRC_OUT);
+            priority = 3;
+        }
     }
 }
