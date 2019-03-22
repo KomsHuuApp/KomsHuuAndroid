@@ -3,6 +3,8 @@ package com.komshuu.komshuuandroidfrontend.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,18 +64,18 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView emergencyId, emergencyCallName, emergencyCallNumber, apartmentId;
+        TextView emergencyCallName, emergencyCallNumber;
         ImageView emergencyCallImage, deleteProduct, editProduct;
+        long emergencyId, apartmentId;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            emergencyId = (TextView) itemView.findViewById(R.id.emergencyId);
             emergencyCallName = (TextView) itemView.findViewById(R.id.emergencyname);
             emergencyCallNumber = (TextView) itemView.findViewById(R.id.emergencynumber);
-            apartmentId = (TextView) itemView.findViewById(R.id.apartmentId);
             emergencyCallImage = (ImageView) itemView.findViewById(R.id.emergencyImage);
             deleteProduct = (ImageView) itemView.findViewById(R.id.deleteproduct);
             editProduct = (ImageView) itemView.findViewById(R.id.editproduct);
+            emergencyCallImage.setOnClickListener(this);
             editProduct.setOnClickListener(this);
             deleteProduct.setOnClickListener(this);
             if (role != 1) {
@@ -85,8 +87,8 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
         public void setData(EmergencyCallNumber selectedProduct, int position) {
             this.emergencyCallName.setText(selectedProduct.getName());
             this.emergencyCallNumber.setText(selectedProduct.getPhoneNumber());
-            this.emergencyId.setText(selectedProduct.getEmergencyId() + "");
-            this.apartmentId.setText(selectedProduct.getApartmentId() + "");
+            this.emergencyId = selectedProduct.getEmergencyId();
+            this.apartmentId = selectedProduct.getApartmentId();
             this.emergencyCallImage.setImageResource(selectedProduct.getImageID());
         }
 
@@ -94,15 +96,20 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
         @Override
         public void onClick(View v) {
             int id = v.getId();
-            if (id == R.id.deleteproduct) {
+            if (id == R.id.emergencyImage) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + emergencyCallNumber.getText()));
+                context.startActivity(intent);
+
+            } else if (id == R.id.deleteproduct) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Are you sure?");
                 builder.setMessage("After this process, the deleted data can not be retrieve");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         RequestQueue queue = Volley.newRequestQueue(context);
-                        System.out.println(emergencyId.getText() + " " + emergencyCallName.getText());
-                        String url = "https://enigmatic-atoll-89666.herokuapp.com/deleteEmergencyNumber?id=" + emergencyId.getText() + "&apartmentId=" + apartmentId.getText();
+                        System.out.println(emergencyId + " " + emergencyCallName.getText());
+                        String url = "https://enigmatic-atoll-89666.herokuapp.com/deleteEmergencyNumber?id=" + emergencyId + "&apartmentId=" + apartmentId;
                         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                                 new Response.Listener<String>() {
                                     @Override
@@ -129,8 +136,6 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 final View view = inflater.inflate(R.layout.emergency_edit_layout, null);
-                final String emergencyIdText = (String) emergencyId.getText();
-                final String apartmentIdText = (String) apartmentId.getText();
                 final EditText editTextEmergencyDescription = (EditText) view.findViewById(R.id.edit_emergency_description);
                 final EditText editTextEmergencyNumber = (EditText) view.findViewById(R.id.edit_emergency_number);
                 editTextEmergencyDescription.setText(emergencyCallName.getText());
@@ -148,10 +153,10 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
                         String url = "https://enigmatic-atoll-89666.herokuapp.com/updateEmergencyNumber";
                         JSONObject jsonObject = new JSONObject();
                         try {
-                            jsonObject.put("numberId", emergencyIdText);
+                            jsonObject.put("numberId", emergencyId);
                             jsonObject.put("name", editTextEmergencyDescription.getText());
                             jsonObject.put("phoneNumber", editTextEmergencyNumber.getText());
-                            jsonObject.put("apartmentId", apartmentIdText);
+                            jsonObject.put("apartmentId", apartmentId);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

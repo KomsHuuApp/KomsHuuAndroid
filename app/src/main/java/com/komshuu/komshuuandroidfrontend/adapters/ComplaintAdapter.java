@@ -2,9 +2,7 @@ package com.komshuu.komshuuandroidfrontend.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.StrictMode;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,17 +17,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.komshuu.komshuuandroidfrontend.R;
-import com.komshuu.komshuuandroidfrontend.UserOrderActivity;
 import com.komshuu.komshuuandroidfrontend.models.Complaint;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.MyViewHolder> {
@@ -67,16 +59,15 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.MyVi
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView complaintDate, complaintDescription,personId,complaintId,apartmentId;
+        TextView complaintDate, complaintDescription, complaintPerson;
+        String personId, complaintId, apartmentId;
         ImageView deleteproduct;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             complaintDate = (TextView) itemView.findViewById(R.id.complaintDate);
             complaintDescription = (TextView) itemView.findViewById(R.id.complaintDescription);
-            personId = (TextView) itemView.findViewById(R.id.personId);
-            complaintId = (TextView) itemView.findViewById(R.id.complaintId);
-            apartmentId = (TextView) itemView.findViewById(R.id.apartmentId);
+            complaintPerson = (TextView) itemView.findViewById(R.id.complaintPerson);
             deleteproduct = (ImageView) itemView.findViewById(R.id.deleteproduct);
             deleteproduct.setOnClickListener(this);
         }
@@ -85,10 +76,29 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.MyVi
 
             this.complaintDate.setText(selectedProduct.getComplaintDate());
             this.complaintDescription.setText(selectedProduct.getComplaintDescription());
-            this.personId.setText(selectedProduct.getPersonID() + "");
-            this.complaintId.setText(selectedProduct.getComplaintID() + "");
-            this.apartmentId.setText(selectedProduct.getApartmentID() + "");
+            this.personId = selectedProduct.getPersonID();
+            this.complaintId = selectedProduct.getComplaintID();
+            this.apartmentId = selectedProduct.getApartmentID();
 
+            RequestQueue queue = Volley.newRequestQueue(context);
+            String url = "https://enigmatic-atoll-89666.herokuapp.com/getPersonById?id="+ personId + "&apartmentId=" + apartmentId;
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        complaintPerson.setText(jsonObject.getString("name") + " " + jsonObject.getString("surname").toUpperCase());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+            queue.add(stringRequest);
         }
 
         @Override
@@ -99,7 +109,7 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.MyVi
             builder.setPositiveButton("TAMAM", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     RequestQueue queue = Volley.newRequestQueue(context);
-                    String url = "https://enigmatic-atoll-89666.herokuapp.com/deleteComplaint?id=" + complaintId.getText() + "&apartmentId=" + apartmentId.getText();
+                    String url = "https://enigmatic-atoll-89666.herokuapp.com/deleteComplaint?id=" + complaintId + "&apartmentId=" + apartmentId;
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                             new Response.Listener<String>() {
                                 @Override

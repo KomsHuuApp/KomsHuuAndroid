@@ -54,7 +54,7 @@ public class EmergencyNumbersActivity extends AppCompatActivity {
                             for(int i = 0; i < emergencyNumbers.length(); i++) {
                                 JSONObject announcement = emergencyNumbers.getJSONObject(i);
                                 EmergencyCallNumber temp = new EmergencyCallNumber();
-                                temp.setImageID(R.drawable.ic_menu_gallery);
+                                temp.setImageID(R.drawable.ic_baseline_call);
                                 temp.setEmergencyId(announcement.getLong("numberId"));
                                 temp.setName(announcement.getString("name"));
                                 temp.setPhoneNumber(announcement.getString("phoneNumber"));
