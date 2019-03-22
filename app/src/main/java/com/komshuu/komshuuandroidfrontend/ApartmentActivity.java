@@ -2,9 +2,9 @@ package com.komshuu.komshuuandroidfrontend;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -12,7 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -22,9 +21,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.komshuu.komshuuandroidfrontend.adapters.ApartmentAdapter;
 import com.komshuu.komshuuandroidfrontend.adapters.UserAdapter;
-import com.komshuu.komshuuandroidfrontend.models.Apartment;
+import com.komshuu.komshuuandroidfrontend.models.PasswordGenerator;
 import com.komshuu.komshuuandroidfrontend.models.User;
 
 import org.json.JSONArray;
@@ -34,7 +32,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ApartmentActivity extends AppCompatActivity {
-
     RecyclerView recyclerView1;
     ArrayList<User> users;
 
@@ -142,7 +139,28 @@ public class ApartmentActivity extends AppCompatActivity {
                         jsonObject.put("gender", editTextGender.getText());
                         jsonObject.put("apartmentId", user.getApartmentId());
                         jsonObject.put("username", editTextUsername.getText());
-                        jsonObject.put("password", "abcde");
+                        PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
+                                .useDigits(true)
+                                .useLower(true)
+                                .useUpper(true)
+                                .build();
+                        String password = passwordGenerator.generate(8);
+                        jsonObject.put("password", password);
+                        final String fromEmail = "noreplykomshuu@gmail.com";
+                        final String password1 = "ntdY2sX9";
+                        final String toEmail = editTextUsername.getText().toString();
+
+                        String message = "Komshuu Uygulamasına başarıyla kaydoldunuz. Şifreniz aşağıdaki gibidir.\n" + "Şifreniz:" + password;
+                        Intent i = new Intent(Intent.ACTION_SEND);
+                        i.setType("message/rfc822");
+                        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{toEmail});
+                        i.putExtra(Intent.EXTRA_SUBJECT, "Uygulama Kaydı hk.");
+                        i.putExtra(Intent.EXTRA_TEXT   , message);
+                        try {
+                            startActivity(Intent.createChooser(i, "Send mail..."));
+                        } catch (android.content.ActivityNotFoundException ex) {
+                            Toast.makeText(ApartmentActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

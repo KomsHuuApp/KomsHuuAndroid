@@ -22,7 +22,7 @@
         android:id="@+id/add_user_role"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:hint="Rol"/>
+        android:hint="Rol(Yönetici için 1, Kullanıcı için 2, görevli için 3)"/>
 
     <EditText
         android:id="@+id/add_user_number"
