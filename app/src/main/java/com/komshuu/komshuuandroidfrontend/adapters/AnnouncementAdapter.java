@@ -10,17 +10,27 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.komshuu.komshuuandroidfrontend.MainActivity;
 import com.komshuu.komshuuandroidfrontend.models.Announcement;
 import com.komshuu.komshuuandroidfrontend.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 
 public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapter.MyViewHolder> {
 
@@ -29,9 +39,10 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
     Context context;
     long role;
 
-    public AnnouncementAdapter(Context context, ArrayList<Announcement> products, long role) {
+    public AnnouncementAdapter(Context context, ArrayList<Announcement> announcements, long role) {
         inflater = LayoutInflater.from(context);
-        this.mAnnouncementList = products;
+        this.mAnnouncementList = announcements;
+        Collections.reverse(mAnnouncementList);
         this.context = context;
         this.role = role;
     }
@@ -130,7 +141,7 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
             }
             else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                View view = inflater.inflate(R.layout.announcement_edit_layout, null);
+                final View view = inflater.inflate(R.layout.announcement_edit_layout, null);
                 EditText editTextAnnouncementDescription = (EditText) view.findViewById(R.id.edit_announcement_description);
                 editTextAnnouncementDescription.setText(announcementDescription.getText());
                 builder.setView(view)
@@ -144,7 +155,38 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
                         .setPositiveButton("Kaydet", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                Calendar cal = Calendar.getInstance();
+                                cal.add(Calendar.HOUR_OF_DAY, 3);
+                                String date = new SimpleDateFormat("dd MMM yyyy").format(cal.getTime());
 
+                                EditText announcementEditDescription = (EditText) view.findViewById(R.id.edit_announcement_description);
+
+                                RequestQueue queue = Volley.newRequestQueue(context);
+                                String url = "https://enigmatic-atoll-89666.herokuapp.com/updateAnnouncement";
+                                JSONObject jsonObject = new JSONObject();
+                                try {
+                                    jsonObject.put("announcementId", announcementId);
+                                    jsonObject.put("text", announcementEditDescription.getText());
+                                    jsonObject.put("apartmentId", apartmentId);
+                                    jsonObject.put("announcementDate", date);
+                                    jsonObject.put("announcementImportance", announcementImportance);
+                                    jsonObject.put("announcerId", announcerId);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, jsonObject, new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        Toast.makeText(context, "Duyuru güncellendi.", Toast.LENGTH_LONG).show();
+                                        ((MainActivity)context).recreate();
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Toast.makeText(context, "Duyuru güncellenemedi!", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                                queue.add(jsonObjectRequest);
                             }
                         });
                 AlertDialog editDialog = builder.create();

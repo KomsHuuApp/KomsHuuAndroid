@@ -21,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.komshuu.komshuuandroidfrontend.EmergencyNumbersActivity;
 import com.komshuu.komshuuandroidfrontend.models.EmergencyCallNumber;
 import com.komshuu.komshuuandroidfrontend.R;
 
@@ -164,6 +165,7 @@ public class EmergencyCallNumberAdapter extends RecyclerView.Adapter<EmergencyCa
                             @Override
                             public void onResponse(JSONObject response) {
                                 Toast.makeText(context, "Acil Çağrı numarası güncellenmiştir.", Toast.LENGTH_LONG).show();
+                                ((EmergencyNumbersActivity)context).recreate();
                             }
                         }, new Response.ErrorListener() {
                             @Override

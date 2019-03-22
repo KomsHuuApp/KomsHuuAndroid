@@ -23,16 +23,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.MyViewHolder> {
 
-    ArrayList<Complaint> mComplaintList;
-    LayoutInflater inflater;
-    Context context;
+    private ArrayList<Complaint> mComplaintList;
+    private LayoutInflater inflater;
+    private Context context;
 
-    public ComplaintAdapter(Context context, ArrayList<Complaint> products) {
+    public ComplaintAdapter(Context context, ArrayList<Complaint> complaints) {
         inflater = LayoutInflater.from(context);
-        this.mComplaintList = products;
+        this.mComplaintList = complaints;
+        Collections.reverse(mComplaintList);
         this.context=context;
     }
 
