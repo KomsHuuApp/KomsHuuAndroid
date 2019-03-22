@@ -1,5 +1,7 @@
 package com.komshuu.komshuuandroidfrontend;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,7 +29,7 @@ import java.util.Calendar;
 public class UserOrderListActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private UserOrderListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     ArrayList<UserOrderList> userOrderList;
 
@@ -57,8 +59,8 @@ public class UserOrderListActivity extends AppCompatActivity {
                                 Long flatnumber = new Long(order.getLong("flatId"));
                                 String str = flatnumber + "";
                                 temp.setFlatNumber("Daire Numarasi: " + str);
-                                System.out.println(temp.getFlatNumber());
-                                System.out.println(temp.getOrder());
+                                temp.setOrderId(order.getInt("orderId"));
+                                temp.setApartmentId(order.getLong("apartmentId"));
                                 userOrderList.add(temp);
                             }
                             mRecyclerView = findViewById(R.id.recyclerView2);
@@ -68,6 +70,43 @@ public class UserOrderListActivity extends AppCompatActivity {
 
                             mRecyclerView.setLayoutManager(mLayoutManager);
                             mRecyclerView.setAdapter(mAdapter);
+
+                            mAdapter.setOnItemClickListener(new UserOrderListAdapter.OnItemClickListener() {
+                                @Override
+                                public void onDeleteClick(final int position) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(UserOrderListActivity.this);
+                                    builder.setMessage("Silmek istediğinize emin misiniz?");
+                                    builder.setPositiveButton("TAMAM", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            RequestQueue queue = Volley.newRequestQueue(UserOrderListActivity.this);
+                                            String url ="https://enigmatic-atoll-89666.herokuapp.com/deleteOrder?id=" +
+                                                    userOrderList.get(position).getOrderId() + "&apartmentId=" + userOrderList.get(position).getApartmentId();
+                                            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                                                @Override
+                                                public void onResponse(String response) {
+                                                }
+                                            }, new Response.ErrorListener() {
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+
+                                                }
+                                            });
+                                            queue.add(stringRequest);
+                                            userOrderList.remove(position);
+                                            mAdapter.notifyItemRemoved(position);
+                                            mAdapter.notifyItemRangeChanged(position, userOrderList.size());
+                                        }
+                                    });
+                                    builder.setNegativeButton("İPTAL", new DialogInterface.OnClickListener(){
+                                        public void onClick(DialogInterface dialog, int id) {
+
+                                        }
+                                    });
+                                    builder.show();
+
+                                }
+
+                            });
 
                         } catch (Exception ex) {
                         }
@@ -82,6 +121,12 @@ public class UserOrderListActivity extends AppCompatActivity {
 
 
 
+    }
+
+
+    public void removeItem (int position) {
+        userOrderList.remove(position);
+        mAdapter.notifyItemRemoved(position);
     }
 
 

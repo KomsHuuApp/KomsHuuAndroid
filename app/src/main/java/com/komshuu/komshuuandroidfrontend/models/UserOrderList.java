@@ -3,6 +3,9 @@ package com.komshuu.komshuuandroidfrontend.models;
 public class UserOrderList {
     private String flatNumber;
     private String order;
+    private int orderId;
+    private long apartmentId;
+
 
 
     public UserOrderList() {
@@ -13,6 +16,24 @@ public class UserOrderList {
     public UserOrderList(String flatnumber, String str) {
         flatNumber = flatnumber;
         order = str;
+
+    }
+
+    public long getApartmentId() {
+        return apartmentId;
+    }
+
+    public void setApartmentId(long apartmentId) {
+        this.apartmentId = apartmentId;
+    }
+
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int id) {
+        orderId = id;
 
     }
 
