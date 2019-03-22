@@ -51,7 +51,12 @@
         <activity
             android:name=".ComplaintActivity"
             android:label="@string/complaints" />
-        <activity android:name=".UserOrderListActivity"></activity>
+        <activity
+            android:name=".UserOrderListActivity"
+            android:label="Siparişler"/>
+        <activity
+            android:name=".DuesActivity"
+            android:label="Aidat"/>
     </application>
 
 </manifest>

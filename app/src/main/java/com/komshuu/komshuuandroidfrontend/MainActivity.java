@@ -178,10 +178,6 @@ public class MainActivity extends AppCompatActivity
             Menu navMenu = navigationView.getMenu();
             navMenu.findItem(R.id.nav_order).setVisible(false);
         }
-        if(user.getRole() != 3) {
-            Menu navMenu = navigationView.getMenu();
-            navMenu.findItem(R.id.nav_order_list).setVisible(false);
-        }
         mHeaderView = navigationView.getHeaderView(0);
         textViewName = (TextView) mHeaderView.findViewById(R.id.textViewName);
         textViewUserName = (TextView) mHeaderView.findViewById(R.id.textViewUserName);
@@ -339,19 +335,20 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (id == R.id.nav_dues) {
-
+            Intent intent = new Intent(this, DuesActivity.class);
+            intent.putExtra("user", user);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         } else if (id == R.id.nav_order) {
             Intent intent = new Intent(this, UserOrderActivity.class);
             intent.putExtra("user", user);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
         } else if (id == R.id.nav_order_list) {
             Intent intent = new Intent(this,UserOrderListActivity.class);
             intent.putExtra("user", user);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
         } else if (id == R.id.nav_numbers) {
             Intent intent = new Intent(this, EmergencyNumbersActivity.class);
             intent.putExtra("user", user);
@@ -362,7 +359,6 @@ public class MainActivity extends AppCompatActivity
             intent.putExtra("user", user);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
         } else if (id == R.id.nav_warn) {
 
         } else if (id == R.id.complaints) {
@@ -370,8 +366,6 @@ public class MainActivity extends AppCompatActivity
             intent.putExtra("user", user);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-        } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_logout) {
             super.onBackPressed();
