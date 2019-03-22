@@ -181,7 +181,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 object.getString("relativeNumber"), object.getString("number"),
                                 object.getString("gender"), object.getLong("apartmentId"),
                                 object.getString("password"), object.getString("username"),
-                                object.getInt("flatNumber"));
+                                object.getInt("flatNumber"), R.drawable.ic_menu_gallery);
                         Intent mainActivity = new Intent(LoginActivity.this, MainActivity.class);
                         mainActivity.putExtra("user", user);
                         dialog.dismiss();

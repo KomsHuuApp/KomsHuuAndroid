@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <EditText
+        android:id="@+id/add_user_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="İsim"/>
+
+    <EditText
+        android:id="@+id/add_user_surname"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="Soyisim"/>
+
+    <EditText
+        android:id="@+id/add_user_role"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="Rol"/>
+
+    <EditText
+        android:id="@+id/add_user_number"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="Numara"/>
+
+    <EditText
+        android:id="@+id/add_user_relnumber"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="Yakın Numarası"/>
+
+    <EditText
+        android:id="@+id/add_user_gender"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="Cinsiyet"/>
+
+    <EditText
+        android:id="@+id/add_user_username"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="Kullanıcı Adı"/>
+
+    <EditText
+        android:id="@+id/add_user_flatnumber"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="Daire Numarası"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingTop="12dp">
+
+
+    </LinearLayout>
+</LinearLayout>

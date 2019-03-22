@@ -15,9 +15,14 @@ public class User implements Serializable {
     private String password;
     private String username;
     private int flatNumber;
+    private int imageID;
+
+    public User () {
+
+    }
 
     public User(long id, String name, String surname, long role, String relativeNumber, String number,
-                String gender, long apartmentId, String password, String username, int flatNumber) {
+                String gender, long apartmentId, String password, String username, int flatNumber, int imageID) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -29,6 +34,7 @@ public class User implements Serializable {
         this.password = password;
         this.username = username;
         this.flatNumber = flatNumber;
+        this.imageID = imageID;
     }
     public long getId() {
         return id;
@@ -116,5 +122,13 @@ public class User implements Serializable {
 
     public void setFlatNumber(int flatNumber) {
         this.flatNumber = flatNumber;
+    }
+
+    public int getImageID() {
+        return imageID;
+    }
+
+    public void setImageID(int imageID) {
+        this.imageID = imageID;
     }
 }
