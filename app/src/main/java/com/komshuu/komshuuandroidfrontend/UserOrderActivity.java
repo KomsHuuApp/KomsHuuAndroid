@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.komshuu.komshuuandroidfrontend.adapters.UserOrderAdapter;
+import com.komshuu.komshuuandroidfrontend.models.User;
 import com.komshuu.komshuuandroidfrontend.models.UserOrder;
 
 import org.json.JSONException;
@@ -67,9 +68,11 @@ public class UserOrderActivity extends AppCompatActivity {
         buildRecyclerView();
 
 
-
-
         submitButton = (Button) findViewById(R.id.submitButton);
+
+
+        Intent parentIntent = getIntent();
+        final User user = (User) parentIntent.getSerializableExtra("user");
         RequestQueue MyRequestQueue = Volley.newRequestQueue(this);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -80,13 +83,13 @@ public class UserOrderActivity extends AppCompatActivity {
                 createOrder();
                 AlertDialog.Builder builder = new AlertDialog.Builder(UserOrderActivity.this);
                 builder.setTitle("Siparis Ver");
-                builder.setMessage("Siparisi Vermek istediginizden Emin misiniz?" + "\n" + "Mevcut siparisiniz: " + "\n" + text)
+                builder.setMessage("Siparisi Vermek istediginizden Emin misiniz?" + "\n" + "Mevcut siparisiniz: " + "\n" + text + "Siparis Notunuz:" + not)
                         .setPositiveButton("Evet", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Calendar cal = Calendar.getInstance();
                                 cal.add(Calendar.HOUR_OF_DAY, 3);
-                                String time= new SimpleDateFormat("dd MMM yyyy HH:mm").format(cal.getTime());
+                                String time= new SimpleDateFormat("dd MMM yyyy").format(cal.getTime());
                                 if (text.equals("")) {
                                     AlertDialog.Builder builder4 = new AlertDialog.Builder(UserOrderActivity.this);
                                     builder4.setMessage("Mevcut Siparisiniz Bulunmamaktadir");
@@ -97,6 +100,7 @@ public class UserOrderActivity extends AppCompatActivity {
                                 }
                                 else {
                                     try {
+
                                         URL url = new URL(server_url);
                                         HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
                                         httpCon.setDoOutput(true);
@@ -104,8 +108,9 @@ public class UserOrderActivity extends AppCompatActivity {
                                         httpCon.setRequestMethod("POST");
                                         httpCon.setRequestProperty("Content-Type", "application/json");
                                         JSONObject eventObject = new JSONObject();
-                                        eventObject.put("orderType", text);
-                                        eventObject.put("apartmentId", new Long(2));
+                                        eventObject.put("orderType", text + not);
+                                        eventObject.put("apartmentId", user.getApartmentId());
+                                        eventObject.put("flatId", user.getFlatNumber());
                                         eventObject.put("orderDate", time);
                                         String json = eventObject.toString();
 

@@ -347,6 +347,10 @@ public class MainActivity extends AppCompatActivity
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
         } else if (id == R.id.nav_order_list) {
+            Intent intent = new Intent(this,UserOrderListActivity.class);
+            intent.putExtra("user", user);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
         } else if (id == R.id.nav_numbers) {
             Intent intent = new Intent(this, EmergencyNumbersActivity.class);
