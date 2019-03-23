@@ -8,19 +8,20 @@
 
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".PollActivity">
 
         <TextView
             android:id="@+id/poll_title"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
+            android:layout_width="282dp"
+            android:layout_height="21dp"
             android:layout_margin="10dp"
+            android:layout_marginTop="16dp"
             android:textSize="20sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="20dp" />
 
         <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/radio_group"
@@ -34,6 +35,7 @@
             <RadioButton
                 android:id="@+id/choice_1"
                 android:layout_width="wrap_content"
+                android:text="option1"
                 android:layout_height="wrap_content" />
 
             <android.support.v4.widget.ContentLoadingProgressBar
